@@ -8,7 +8,8 @@
   <title>입소노트 · 사용성 테스트</title>
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-  <link rel="stylesheet" href="./styles.css?v=20261126-typography">
+  <link rel="stylesheet" href="./styles.css?v=20261126-layout">
+  <link rel="stylesheet" href="./mobile-design.css?v=20261126-layout">
 </head>
 <body>
   <a class="skip-link" href="#phone-screen">앱 화면으로 바로 가기</a>
@@ -23,6 +24,9 @@
       <div class="device" id="device">
         <div class="os-bar"><time id="korea-clock" aria-label="한국 현재 시각"></time><div class="os-signals" aria-hidden="true"><svg viewBox="0 0 19 14"><path d="M1 10h3v4H1zm5-3h3v7H6zm5-3h3v10h-3zm5-3h3v13h-3z"/></svg><svg viewBox="0 0 20 15"><path d="M1 5a14 14 0 0 1 18 0l-2 2A11 11 0 0 0 3 7zm4 4a8 8 0 0 1 10 0l-2 2a5 5 0 0 0-6 0zm3 4a3 3 0 0 1 4 0l-2 2z"/></svg><span class="battery"><i></i></span></div></div>
         <div class="phone-scroll" id="phone-screen" tabindex="-1"></div>
+        <div class="app-cta" id="app-cta" hidden></div>
+        <div class="phone-sheet-backdrop" id="phone-sheet-backdrop" data-action="close-ranks" hidden></div>
+        <section class="phone-sheet" id="phone-rank-sheet" role="dialog" aria-modal="true" aria-labelledby="ranks-heading" hidden></section>
         <nav class="app-nav" id="app-nav" aria-label="앱 메뉴"></nav>
         <div class="app-toast" id="app-toast" role="status" aria-live="polite"></div>
       </div>
@@ -34,6 +38,6 @@
   <div class="sheet-backdrop" id="sheet-backdrop" hidden data-action="close-questions"></div>
   <dialog id="main-dialog" aria-labelledby="dialog-heading"></dialog>
   <noscript><p class="noscript">테스트를 진행하려면 브라우저에서 JavaScript를 허용해 주세요.</p></noscript>
-  <script type="module" src="./app.js"></script>
+  <script type="module" src="./app.js?v=20261126-layout"></script>
 </body>
 </html>

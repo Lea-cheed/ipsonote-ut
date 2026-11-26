@@ -1,0 +1,107 @@
+/* 학부모 최종: 375px reference, with fluid widths for real mobile devices. */
+.phone-scroll{scrollbar-width:none}.phone-scroll::-webkit-scrollbar{display:none;width:0;height:0}
+.app-top{height:50px;padding:0 20px 0 18px;gap:0}
+.app-logo-image{width:154.5px;height:22px;object-fit:contain;object-position:left;flex-shrink:1;min-width:0}
+.app-top-actions{width:136px;flex:0 0 136px;gap:12px}
+.child-button{width:86px;height:38px;padding:0 10px;gap:6px;border-color:#e7edf4;white-space:nowrap}
+.circle-button{width:38px;height:38px;flex:0 0 38px;border-color:#e7edf4}
+.greeting{margin:16px 18px 22px;padding:0;min-height:54px;font-size:18px;line-height:27px;letter-spacing:0}
+.school-tabs{display:flex;padding:0;margin:0 16px;height:48px;align-items:stretch}
+.school-tab{flex:1;min-width:0;padding:0;font-size:13px;font-weight:500;line-height:17px}
+.school-tab.active{flex:0 0 122px;margin:0 0 -1px;z-index:1;border:1px solid #e7edf4;border-bottom-color:white;border-radius:14px 14px 0 0;font-weight:700}
+.notebook{display:flex;flex-direction:column;gap:24px;margin:0 16px;padding:20px;border:0;outline:1px solid #e7edf4;box-shadow:none;min-height:595px}
+.notebook-star{min-height:665px}.notebook-sunny{min-height:692px}.notebook-forest{min-height:595px}
+.main-rank{display:flex;flex-direction:column;gap:8px;min-height:100px}
+.rank-top{height:50px;gap:19px;flex-shrink:0}
+.rank-number{display:flex;align-items:baseline;font-size:48px;line-height:50px;letter-spacing:0;font-weight:800}
+.rank-number small{font-size:20px;line-height:50px;margin:0}
+.delta{display:inline-flex;align-items:center;justify-content:center;min-width:35px;height:20px;line-height:15px;padding:0 5px;font-size:12px;gap:2px;border-radius:99px;background:#ffe8ed;color:#ff6067;font-weight:600;white-space:nowrap}
+.delta.down{background:#eaf7ff;color:#5d9eff}
+.history-link{height:20px;display:flex;align-items:center;gap:0;margin-left:auto;padding:0;font-size:13px;line-height:17px}
+.history-link svg{width:20px;height:20px;margin-left:-4px}
+.rank-reason{margin:0;min-height:42px;font-size:14px;line-height:21px;font-weight:600;letter-spacing:0}
+.contact-banner{width:calc(100% + 7px);height:68px;flex-shrink:0;padding:16px 12px;margin:0;gap:11px;border-radius:2px;font-size:13px;line-height:17px}
+.contact-banner svg{width:24px;height:24px}.contact-banner>div{min-width:0}.contact-banner strong{font-size:13px;font-weight:700;line-height:17px;display:block}.contact-banner small{font-size:12px;line-height:15px;margin:4px 0 0;white-space:nowrap}
+.notebook .app-divider{height:1px;width:100%;margin:0;flex-shrink:0;background:#f3f3f3}
+.main-info{display:flex;flex-direction:column;gap:10px}
+.info-row{height:18px;align-items:center;margin:0;font-size:12px;line-height:15px;color:#506174}
+.info-row strong{font-size:14px;line-height:18px;font-weight:700;color:#172332}
+.application-info>span:first-child{font-size:13px;line-height:17px}
+.info-row.application-info>span:last-child{display:flex;align-items:center;gap:4px;color:#172332;font-size:14px;line-height:18px;white-space:nowrap;letter-spacing:0}
+.application-info i{display:inline-block;width:1px;height:4px;background:#bfbfbf;flex-shrink:0}
+.main-recruitment{height:88px;display:flex;flex-direction:column;gap:12px}
+.recruit-top{height:23px;gap:4px;font-size:11px;line-height:14px}
+.age-tag{height:23px;display:inline-flex;align-items:center;justify-content:center;min-width:45px;padding:4px 8px;font-size:11px;line-height:15px;font-weight:400}
+.recruit-link{display:flex;align-items:center;gap:0;padding:0;font-size:13px;line-height:17px;height:20px}.recruit-link svg{width:20px;height:20px}
+.main-recruitment .recruit-numbers{height:53px;margin:0;padding:16px 0;grid-template-columns:1fr 1fr;gap:0;align-items:center;line-height:21px}
+.main-recruitment .recruit-numbers>div{display:flex;align-items:center;justify-content:center;gap:4px;height:21px;font-size:13px;line-height:17px;white-space:nowrap}
+.main-recruitment .recruit-numbers>div+div{border-color:#e5e5e5}
+.count-value{display:inline-flex;align-items:baseline;gap:0;color:#172332}.count-value strong{font-size:16px;line-height:21px;font-weight:700}.count-value small{font-size:12px;line-height:15px;color:#506174}
+.secondary-app-button{flex-shrink:0;height:52px;padding:10px 16px;font-size:13px;line-height:17px;font-weight:500;background:#f0f3f6}
+.main-links{display:flex;flex-direction:column;gap:16px;height:64px}
+.link-row{height:24px;display:flex;align-items:center;gap:8px;padding:0;font-size:14px;line-height:18px;font-weight:500}
+.link-row>svg:last-child{width:24px;height:24px;margin-left:auto}.link-row .colored-icon svg{width:20px;height:20px}
+.app-nav{display:flex;justify-content:space-between;align-items:flex-start;height:90px;flex:0 0 90px;padding:15px 32px 32px;border-radius:38px 38px 0 0;box-shadow:0 -4px 12px #00000014}
+.nav-item{width:80px;flex:0 0 80px;height:43px;padding:0;gap:7px;font-size:12px;line-height:15px;font-weight:400}
+.nav-item svg{width:24px;height:24px;flex-shrink:0}
+.phone-scroll[data-page]:not([data-page=home]){background:white}
+.sub-header{height:50px;grid-template-columns:24px 1fr 24px;padding:0 16px;border:0;background:#fff}
+.sub-header h2{font-size:16px;line-height:21px;font-weight:600;color:#172332}.back-button{width:24px;height:24px;padding:0}.back-button svg{width:20px;height:20px}
+.panel-tabs{position:sticky;top:50px;z-index:3;height:46px;border-bottom:1px solid #f3f3f3}
+.panel-tabs button{height:46px;padding:0;font-size:14px;font-weight:500;line-height:18px;color:#838383}
+.panel-tabs button.active{border-bottom:2px solid #1956a9;color:#1956a9;font-weight:600}
+.sub-body{padding:20px 16px 28px;min-height:0;background:white}
+.school-badge{display:inline-flex;align-items:center;justify-content:center;height:24px;padding:4px 8px;border-radius:99px;background:#faf9f7;color:#666;font-size:12px;line-height:15px;white-space:nowrap}
+.school-meta{display:flex;align-items:center;gap:8px;color:#838383;font-size:12px;line-height:15px}
+.recruitment-body .school-identity{font-size:22px;line-height:29px;font-weight:600;margin:8px 0 24px}
+.summary-box{border-radius:2px;padding:16px;background:#f5f6f8}
+.summary-box .recruit-numbers{margin:0;font-size:12px;line-height:15px;font-weight:600;color:#506174}
+.summary-box .recruit-numbers strong{font-size:24px;line-height:30px;font-weight:600;color:#222;margin-top:4px}
+.summary-box .recruit-numbers small{font-size:14px;font-weight:400}
+.app-note{font-size:12px;line-height:18px;margin:8px 0 0;color:#838383}
+.table-heading{font-size:16px;line-height:21px;margin:24px 0 16px}.table-heading strong{font-weight:600}.table-heading time{font-size:11px;line-height:14px}
+.app-table{width:100%;table-layout:fixed;color:#506174;font-size:13px;line-height:18px;border-collapse:collapse}
+.app-table th{font-size:12px;line-height:15px;font-weight:400;background:#f5f6f8}
+.app-table th,.app-table td{height:42px;padding:10px 8px;border-top:1px solid #e7edf4;border-bottom:1px solid #e7edf4;border-left:1px solid #e2e5e8;border-right:0;text-align:center}
+.app-table th:first-child,.app-table td:first-child{border-left:0}.app-table th{height:36px}
+.recruitment-table th:first-child{width:40%}.recruitment-table td:first-child{text-align:left;padding-left:12px}.recruitment-table td:not(:first-child){color:#838383}
+.own-child{font-size:10px;line-height:15px;margin-left:6px;padding:4px 8px}
+.history-body{padding-top:15px}.history-summary{padding:20px 20px 24px;background:#f5f6f8;color:#506174;font-size:13px;line-height:17px}
+.history-summary>strong{display:block;margin:10px 0 18px;color:#222;font-size:28px;line-height:36px;font-weight:600}.history-summary>strong small{font-size:15px}
+.history-summary>div{display:flex;align-items:center;justify-content:space-between;gap:8px}.history-summary time{font-size:11px;color:#838383}
+.sort-chip{padding:7px 18px;border:1px solid #1956a9;border-radius:99px;font-size:13px;color:#1956a9;line-height:17px}
+.history-body .table-heading{margin-top:24px;margin-bottom:0}.history-item{padding:22px 0 20px;border-color:#eceef1}
+.history-numbers{font-size:16px;line-height:21px;gap:8px;font-weight:400}.history-numbers strong{font-weight:600}
+.history-reason{display:flex;align-items:center;justify-content:space-between;gap:28px;margin-top:14px}.history-reason p{margin:0;max-width:245px;font-size:14px;line-height:21px;color:#68727f;font-weight:400}.history-reason .delta{flex-shrink:0}.history-item time{display:block;font-size:12px;line-height:15px;margin-top:4px;color:#838383}
+.notification-filters{height:70px;padding:18px 16px;margin:0;gap:8px;display:flex;align-items:center;background:white;overflow-x:auto}
+.filter-chip{height:34px;min-width:76px;border-radius:99px;font-size:13px;font-weight:500;line-height:17px;color:#838383;padding:8px 14px;background:white;border:1px solid #dce1e6}
+.filter-chip:first-child{min-width:52px}.filter-chip.active{border-color:#1956a9;background:white;color:#1956a9}
+.notification-body{padding:12px 16px 24px}.date-label{text-align:center;font-size:12px;line-height:15px;font-weight:500;color:#a0a5ac;margin:0}
+.notification{border:0;border-radius:2px;padding:16px;margin:0;background:white;color:#172332}.notification.highlight{background:#f0faff}
+.notification small.notification-child{display:flex;align-items:center;gap:4px;color:#506174;font-size:12px;line-height:15px;margin:0 0 10px}
+.notification-child.unread:before{content:"";width:5px;height:5px;flex:0 0 5px;border-radius:50%;background:#0976ff}
+.notification strong{font-size:16px;line-height:21px;font-weight:600}.notification p{font-size:14px;line-height:21px;color:#506174;max-width:245px;margin:10px 0}
+.notification-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;color:#506174;font-size:12px;line-height:15px}.notification-meta time{font-size:11px;line-height:14px;color:#506174}
+.nursery-gallery{position:relative;width:100%;height:240px;background:#f5f6f8}.nursery-gallery>img{display:block;width:100%;height:240px;object-fit:cover}
+.gallery-dots{position:absolute;bottom:11px;left:0;right:0;display:flex;gap:7px;justify-content:center;align-items:center}.gallery-dots i{height:8px;width:8px;border-radius:99px;background:#ffffffb3}.gallery-dots i.active{width:22px;background:white}
+.info-content{padding:24px 20px 32px}.info-identity{display:flex;align-items:center;gap:8px;margin-bottom:12px}.info-identity h3{font-size:18px;line-height:23px;font-weight:600;margin:0}
+.info-box{border:0;border-radius:0;padding:0 0 24px;margin:0 0 24px;border-bottom:1px solid #e7edf4}.info-box:last-child{border-bottom:0;margin-bottom:0;padding-bottom:0}
+.info-box h3{font-size:16px;line-height:21px;font-weight:400;margin:0 0 10px}
+.info-line{grid-template-columns:64px 1fr;gap:12px;font-size:13px;line-height:17px;margin:8px 0;color:#172332}.info-line:last-child{margin-bottom:0}.info-line span:first-child{color:#838383;font-weight:500}
+.facility-content{display:flex;flex-direction:column;gap:40px;padding-top:24px}.facility-content h3,.teacher-content h3{font-size:18px;line-height:23px;font-weight:600;margin:0 0 12px}
+.facility-summary th{width:96px;text-align:left}.facility-summary td{text-align:left}.facility-table th:first-child{width:56%}.facility-table td:first-child{text-align:left;white-space:nowrap;font-size:12px}
+.facility-table tr:last-child td,.staff-table tr:last-child td{background:#f5f6f8}
+.teacher-content{display:flex;flex-direction:column;gap:40px}.teacher-description{font-size:15px;font-weight:500;line-height:19px;color:#506174;margin:8px 0 16px}
+.ratio-bar{height:26px;background:#adc9f6;border-radius:2px;overflow:hidden}.ratio-bar>i{display:block;height:100%;background:#66a0fd}
+.ratio-legend{display:flex;align-items:center;gap:12px;font-size:12px;line-height:15px;color:#68727f;margin-top:8px}.ratio-legend>span{display:flex;gap:5px;align-items:center}.ratio-legend i{width:6px;height:6px;border-radius:50%;background:#66a0fd}.ratio-legend>span+span i{background:#adc9f6}.ratio-legend b{font-weight:500;color:#172332}
+.tenure-chart{display:flex;align-items:center;gap:40px;margin-top:20px}.donut{width:108px;height:108px;flex:0 0 108px;border-radius:50%;background:conic-gradient(#00a38d 0 40%,#828cff 40% 60%,#e269c3 60% 80%,#f6951f 80% 100%);position:relative}.donut:after{content:"";position:absolute;inset:26px;background:white;border-radius:50%}
+.tenure-legend{flex:1;display:flex;flex-direction:column;gap:10px}.tenure-legend>div{display:flex;align-items:center;gap:7px;font-size:14px;line-height:18px;color:#68727f;white-space:nowrap}.tenure-legend i{width:6px;height:6px;flex:0 0 6px;border-radius:50%}.tenure-legend strong{font-weight:400;color:#172332;margin-left:auto}
+.staff-table th:first-child{width:66%}.staff-table td{font-size:12px;height:42px}
+.guide-body{padding:20px 20px 32px}.guide-body section+section{margin-top:40px}.guide-body h3{font-size:18px;line-height:23px;font-weight:600;margin:0 0 4px}.guide-intro{font-size:13px;line-height:18px;color:#506174;margin:0 0 20px}.rank-definitions{margin:0;font-size:13px;line-height:18px}.rank-definitions>div{display:grid;grid-template-columns:48px 1fr;gap:10px;margin:12px 0}.rank-definitions dt{color:#172332}.rank-definitions dd{margin:0;color:#506174}.guide-table{margin-top:16px}.guide-table th:first-child{width:32%}.guide-table td{height:42px}.guide-body .app-note{color:#506174;margin-top:12px}
+.app-cta{position:absolute;z-index:5;bottom:0;left:0;right:0;pointer-events:none}.app-cta[hidden]{display:none}.cta-gradient{height:116px;padding:64px 20px 0;background:linear-gradient(transparent,#fff 60%)}.cta-gradient button{height:52px;width:100%;background:#1b549b;color:white;font-size:16px;line-height:21px;font-weight:700;border-radius:2px;pointer-events:auto}.home-indicator{height:34px;background:white;display:flex;justify-content:center;align-items:flex-end;padding-bottom:8px}.home-indicator:after{content:"";width:112px;height:5px;border-radius:99px;background:black}
+.phone-scroll.has-cta{padding-bottom:150px}.app-cta.guide-cta .cta-gradient{height:154px;padding-top:10px;background:#fff}.cta-note{font-size:12px;line-height:18px;color:#838383;text-align:center;margin:14px 0 0}.phone-scroll[data-page=rankGuide]{padding-bottom:188px}
+.phone-sheet-backdrop{position:absolute;inset:0;background:#0003;z-index:20}.phone-sheet{position:absolute;left:0;right:0;bottom:0;z-index:21;max-height:88%;overflow-y:auto;border-radius:24px 24px 0 0;background:white;padding:40px 20px 24px;min-height:446px;color:#172332}
+.phone-sheet[hidden],.phone-sheet-backdrop[hidden]{display:none}.sheet-handle{position:absolute;top:9px;left:calc(50% - 40px);width:80px;height:12px;background:transparent;padding:0}.sheet-handle:after{content:"";display:block;margin:auto;width:80px;height:4px;border-radius:99px;background:#d9d9d9}.phone-sheet h2{font-size:18px;line-height:23px;margin:0 0 4px;font-weight:600}.rank-sheet-school{font-size:12px;line-height:15px;color:#838383;margin:0 0 20px}
+.rank-kind{padding:12px 16px 14px;border:0}.rank-kind.current{background:#f0faff}.rank-kind>div{display:flex;align-items:center;justify-content:space-between;gap:8px}.rank-kind h3{font-size:14px;font-weight:600;line-height:18px;margin:0}.rank-kind strong{font-size:14px;line-height:18px;font-weight:500;display:inline-flex;align-items:center;justify-content:center;min-width:55px;height:26px;padding:3px 10px;border-radius:99px;background:#f2f4f6}.rank-kind.current strong{background:#1956a9;color:white}.rank-kind p{font-size:13px;line-height:19.5px;color:#838383;margin:8px 0 0}
+@media(max-width:1024px){.app-top{padding:0 20px 0 18px}.app-nav{flex-basis:90px;padding:15px 32px 32px}.greeting{font-size:18px}.phone-sheet{min-height:min(446px,88%)}}
+@media(min-width:1025px) and (max-width:1200px){.device-column,.device{width:395px}.study-layout{grid-template-columns:minmax(0,1fr) 395px minmax(0,1fr)}}

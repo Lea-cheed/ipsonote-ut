@@ -1,3 +1,4 @@
+import {createMobileScreens} from './mobile-design.js';
 import {SETTINGS, SCHOOLS, TASKS} from './config.js';
 import {STORAGE_KEY, escapeHTML as e, koreaTime, koreaStamp, makeState, restoreState, toggleExclusive, validateQuestions, validEndpoint, exportPayload} from './core.js';
 
@@ -87,26 +88,6 @@ function renderScenario() {
 function subHeader(title) {return `<header class="sub-header">${button('back',icon('back'),'back-button','aria-label="이전 화면"')}<h2>${e(title)}</h2><span></span></header>`;}
 function shortTime() { return koreaTime(new Date(state.startedAt)); }
 function updated() { return koreaStamp(state.startedAt); }
-function renderHome() {
-  const s = school();
-  return `<header class="app-top"><div class="app-logo"><span class="brand-symbol" aria-hidden="true"></span>입소노트</div><div class="app-top-actions">${button('child',`${e(SETTINGS.childName)} ${icon('down')}`,'child-button')}${button('notifications',icon('bell'),'circle-button','aria-label="알림 보기"')}</div></header>
-    <div class="greeting">안녕하세요!<br>${e(SETTINGS.childName)} 어린이의 <strong>신학기 대기현황</strong> 입니다.</div>
-    <div class="school-tabs" role="tablist" aria-label="신청 어린이집">${['sunny','star','forest'].map(id=>button('school',e(data[id].name),`school-tab ${id===state.app.school?'active':''}`,`data-school="${id}" role="tab" aria-selected="${id===state.app.school}"`)).join('')}</div>
-    <section class="notebook" aria-label="${e(s.name)} 입소 현황"><div class="rank-top"><strong class="rank-number">${s.rank}<small>번</small></strong><span class="delta ${s.delta<0?'down':''}">${s.delta<0?'▼':'▲'} ${Math.abs(s.delta)}</span>${button('history',`내역보기 ${icon('arrow')}`,'history-link')}</div>
-    <p class="rank-reason">${e(s.reason)}</p>
-    ${s.contactPending?`<div class="contact-banner">${icon('phone')}<div><strong>순차적으로 전화드릴 예정이에요</strong><small>입소 의사 확인을 위한 연락을 기다려 주세요.</small></div></div>`:''}
-    <hr class="app-divider"><div class="info-row"><span>나의 대기상태</span><strong>${e(s.status)}</strong></div><div class="info-row application-info"><span>신청 정보</span><span>${e(s.type)} · 입소 희망월&nbsp; ${e(SETTINGS.desiredMonth)}</span></div><hr class="app-divider">
-    <div class="recruit-top"><span class="age-tag">${e(SETTINGS.age)}</span><time>${e(shortTime())} 기준</time>${button('recruitment',`모집현황 ${icon('arrow')}`,'recruit-link')}</div>
-    <div class="recruit-numbers"><div>모집 인원 <strong>${s.recruitment}</strong>명</div><div>입소 의사 확인 <strong>${s.responses}</strong>명</div></div>
-    ${button('ranks','상시·전체 순번 보기','secondary-app-button')}
-    ${button('rankGuide',`<span class="colored-icon">${icon('chart')}</span>순번 안내 ${icon('arrow')}`,'link-row')}
-    ${button('info',`<span class="colored-icon">${icon('home')}</span>어린이집 안내 ${icon('arrow')}`,'link-row')}</section><div style="height:25px"></div>`;
-}
-function renderRecruitment() {
-  const s=school();
-  const rows=[['만0세',s.recruitment,s.responses],['만1세',4,2],['만2세',3,1],['만3세','—','—'],['만4세','—','—'],['만5세','—','—'],['영아혼합 (만0~2세)','—','—'],['유아혼합 (만3~5세)','—','—'],['영유아혼합','—','—'],['특수장애','—','—']];
-  return `${subHeader('모집 현황')}<div class="sub-body"><div class="school-type">${e(s.type)} &nbsp; ${e(SETTINGS.desiredMonth.slice(0,4))}년 신학기</div><div class="school-identity">${e(s.name)}</div><div class="summary-box"><div class="recruit-numbers"><div>${e(SETTINGS.age)} 모집 인원<strong>${s.recruitment}<small>명</small></strong></div><div>입소 의사 확인<strong>${s.responses}<small>명</small></strong></div></div></div><p class="app-note">· 입소 의사 확인은 입소를 희망한다고 응답한 인원입니다.</p><div class="table-heading"><strong>반별 모집 현황</strong><time>${e(updated())} 기준</time></div><table class="app-table"><thead><tr><th>연령반</th><th>모집 인원</th><th>입소 의사 확인</th></tr></thead><tbody>${rows.map(([age,n,r],i)=>`<tr><td>${e(age)} ${i===0?'<span class="own-child">우리 아이</span>':''}</td><td>${e(n)}${typeof n==='number'?'명':''}</td><td>${e(r)}${typeof r==='number'?'명':''}</td></tr>`).join('')}</tbody></table></div>`;
-}
 function historyRows() {
   const s=school(); const base=Date.parse(state.startedAt);
   return [
@@ -116,45 +97,26 @@ function historyRows() {
     {from:s.previousRank+3,to:s.previousRank,reason:'앞 순번 아동 3명의 입소가 확정되어 대기 순번이 올라갔어요.',date:base-5*864e5},
   ];
 }
-function renderHistory() {
-  const s=school();
-  return `${subHeader('순번 변동 내역')}<div class="sub-body"><div class="school-type">${e(s.name)} · ${e(SETTINGS.childName)} · 신학기 · ${e(SETTINGS.age)}</div><div class="rank-summary"><span>현재 대기 순번</span><strong class="rank-number">${s.rank}<small>번</small></strong></div><p class="app-note">${e(updated())} 기준</p><div class="table-heading"><strong>변동 내역</strong><span>최신순</span></div>${historyRows().map(r=>`<article class="history-item"><div class="history-numbers"><span>${r.from}번</span>${icon('arrow')}<span>${r.to}번</span><span class="delta ${r.to>r.from?'down':''}">${r.to>r.from?'▼':'▲'} ${Math.abs(r.from-r.to)}</span></div><p>${e(r.reason)}</p><time>${e(koreaStamp(r.date))}</time></article>`).join('')}</div>`;
+const mobile = createMobileScreens({settings:SETTINGS,e,icon,button,shortTime,updated,koreaStamp,historyRows,state:()=>state,data:()=>data});
+let rankFocus;
+function openRankSheet() {
+  rankFocus=document.activeElement;
+  const sheet=$('#phone-rank-sheet');sheet.innerHTML=mobile.ranks();sheet.hidden=false;$('#phone-sheet-backdrop').hidden=false;
+  screen.inert=true;$('#app-nav').inert=true;sheet.querySelector('button')?.focus();track('rank_sheet_opened');
 }
-function renderNotifications() {
-  const rank=state.app.notificationTab==='rank';
-  const items=rank ? [
-    {school:'forest',child:'이하임',line:data.forest.reason,rank:`${data.forest.previousRank}번 → ${data.forest.rank}번`},
-    {school:'star',child:'이하랑',line:'앞 순번 아동 1명이 대기 신청을 취소해 대기 순번이 올라갔어요.',rank:'6번 → 5번'},
-    {school:'sunny',child:'이하윤',line:'입소 우선순위가 높은 아동이 신청해 대기 순번이 한 자리 뒤로 바뀌었어요.',rank:'3번 → 4번'},
-  ] : [
-    {school:'star',child:'이하임',line:'어린이집에서 연락드릴 예정이에요. 등록한 연락처로 오는 전화를 확인해 주세요.',title:'입소 의사 확인을 위해 연락드려요'},
-    {school:'star',child:'이하랑',line:'어린이집에서 입소 희망 여부를 확인했어요. 다음 안내를 기다려 주세요.',title:'입소 의사가 확인됐어요'},
-    {school:'sunny',child:'이하윤',line:'어린이집에서 요청한 서류와 제출 일정을 확인해 주세요.',title:'입소 서류 제출 요청이 도착했어요'},
-  ];
-  const shown=items.filter(i=>state.app.notificationChild==='all'||i.child===state.app.notificationChild);
-  return `${subHeader('알림')}<div class="panel-tabs">${button('notification-tab','순번변동',rank?'active':'','data-tab="rank"')}${button('notification-tab','입소진행',!rank?'active':'','data-tab="admission"')}</div><div class="sub-body"><div class="notification-filters">${[['all','전체'],['이하임','이하임'],['이하랑','이하랑'],['이하윤','이하윤']].map(([id,name])=>button('notification-filter',name,`filter-chip ${state.app.notificationChild===id?'active':''}`,`data-child="${id}"`)).join('')}</div><div class="date-label">오늘</div>${shown.map(i=>button('notification-open',`<small>${e(i.child)} · ${e(data[i.school].name)}</small><strong>${rank?'대기 순번 '+e(i.rank):e(i.title)}</strong><p>${e(i.line)}</p><small>신학기 · ${e(SETTINGS.age)}</small><time>${e(shortTime())}</time>`,'notification',`data-school="${i.school}" data-child="${e(i.child)}"`)).join('')}</div>`;
-}
-function renderRanks() {
-  const s=school();
-  return `${subHeader('상시·전체 순번 보기')}<div class="sub-body"><div class="school-identity">${e(s.name)}</div><div class="rank-kind"><h3>신학기 대기 순번</h3><strong>${s.rank}번</strong><p>${e(SETTINGS.desiredMonth)}까지 입소를 희망하는 아동 중 순번이에요.</p></div><div class="rank-kind"><h3>상시 대기 순번</h3><strong>${s.regularRank===null?'—':s.regularRank+'번'}</strong><p>다음 달까지 입소를 희망하는 아동 중 순번이에요.<br>입소 희망월 한 달 전부터 확인할 수 있어요.</p></div><div class="rank-kind"><h3>전체 대기 순번</h3><strong>${s.allRank}번</strong><p>입소 희망월과 관계없이 전체 대기 아동 중 순번이에요.</p></div>${button('rankGuide','순번 안내 보기','app-outline')}</div>`;
-}
-function renderRankGuide() {
-  return `${subHeader('순번 안내')}<div class="sub-body"><h3>대기 순번은 어떻게 정해지나요?</h3><p class="app-note">같은 어린이집도 누구와 비교하느냐에 따라 순번이 달라요.</p>${[['전체','입소 희망월과 관계없이 전체 대기 순서입니다.'],['상시','조회하는 달의 다음 달까지 입소를 희망한 순서입니다.'],['신학기','해당 신학기 3월까지 입소를 희망한 순서입니다.']].map(([h,p])=>`<div class="guide-block"><h3>${h}</h3><p>${p}</p></div>`).join('')}<h3>입소 희망월에 따라 다르게 표시돼요.</h3><p class="app-note">상시 대기 순번은 입소 희망월 한 달 전부터 확인할 수 있어요.</p><hr class="app-divider"><p class="app-note">순번 산정이나 신청 내역에 관한 문의는 아이사랑을 이용해 주세요.</p>${button('call','아이사랑 문의하기','app-primary','data-provider="아이사랑"')}</div>`;
-}
-function renderInfo() {
-  const s=school(), tab=state.app.infoTab;
-  const rows = arr => arr.map(([a,b])=>`<div class="info-line"><span>${e(a)}</span><span>${e(b)}</span></div>`).join('');
-  const basic=`<div class="school-type">${e(s.type)}</div><div class="school-identity">${e(s.name)}</div><section class="info-box"><h3>기본 정보</h3>${rows([['주소',s.address],['운영시간','평일 07:30~19:30'],['휴무','토·일요일 및 공휴일']])}</section><section class="info-box"><h3>위치 및 방문 안내</h3>${rows([['오시는 길','인근 지하철역에서 도보 약 7분'],['출입구','어린이집 전용 출입구'],['주차','방문 전 문의']])}</section><section class="info-box"><h3>보육 및 시설</h3>${rows([['시설 정원',s.capacity+'명'],['보육 서비스','기본보육 · 연장보육'],['통학차량','운영 안 함']])}</section>`;
-  const facility=`<h3>시설 현황</h3>${rows([['보육실 수','4개'],['놀이터 수','1개'],['통학차량','운영 안 함']])}<h3>연령별 학급 및 아동 수</h3><table class="app-table"><thead><tr><th>연령반</th><th>학급 수</th><th>아동 수</th></tr></thead><tbody>${[['만0세',2,6],['만1세',1,5],['만2세',1,s.enrolled-11],['만3세','—','—'],['만4세','—','—'],['만5세','—','—']].map(r=>'<tr>'+r.map(c=>`<td>${e(c)}</td>`).join('')+'</tr>').join('')}</tbody></table>`;
-  const teacher=`<h3>교사 아동비율</h3><p class="app-note">보육교사 1명당 아동 약 ${(s.enrolled/s.teachers).toFixed(1)}명이에요.</p><div class="summary-box"><div class="recruit-numbers"><div>보육교사<strong>${s.teachers}명</strong></div><div>아동<strong>${s.enrolled}명</strong></div></div></div><h3>현 기관 근속 연수</h3><p class="app-note">1년 미만이 가장 많아요.</p><div class="tiny-chart">${[['1년 미만',40,'#00a38d'],['1~2년',20,'#828cff'],['2~4년',20,'#e269c3'],['4~6년',20,'#f6951f']].map(([label,n,color])=>`<div class="chart-col">${n}%<i style="height:${n*2}px;background:${color}"></i><span>${label}</span></div>`).join('')}</div><h3>직위별 교직원 수</h3>${rows([['원장','1명'],['보육교사',s.teachers+'명'],['조리원','1명']])}`;
-  return `${subHeader('어린이집 안내')}<div class="panel-tabs">${[['basic','기본정보'],['facility','학급시설'],['teacher','교사현황']].map(([id,name])=>button('info-tab',name,id===tab?'active':'',`data-tab="${id}"`)).join('')}</div><div class="sub-body">${tab==='basic'?basic:tab==='facility'?facility:teacher}<p style="margin-top:24px">${button('call','어린이집 문의하기','app-primary','data-provider="어린이집"')}</p></div>`;
+function closeRankSheet() {
+  $('#phone-rank-sheet').hidden=true;$('#phone-sheet-backdrop').hidden=true;screen.inert=false;$('#app-nav').inert=false;rankFocus?.focus?.();
 }
 function renderApp(scroll = 0) {
-  const renders={home:renderHome,recruitment:renderRecruitment,history:renderHistory,notifications:renderNotifications,ranks:renderRanks,rankGuide:renderRankGuide,info:renderInfo};
-  screen.innerHTML=(renders[state.app.page]||renderHome)();
-  const nav=$('#app-nav'); nav.hidden=state.app.page!=='home';
-  nav.style.display=state.app.page==='home'?'grid':'none';
+  if(state.app.page==='ranks')state.app.page='home';
+  screen.dataset.page=state.app.page;$('#device').dataset.page=state.app.page;
+  screen.innerHTML=(mobile[state.app.page]||mobile.home)();
+  const nav=$('#app-nav');nav.hidden=state.app.page!=='home';nav.style.display=state.app.page==='home'?'flex':'none';
   nav.innerHTML=[['home','note','내 입소 현황'],['prepare','check','입소 준비'],['mypage','user','마이페이지']].map(([a,i,t])=>button(a,icon(i)+`<span>${t}</span>`,`nav-item ${a==='home'?'active':''}`)).join('');
+  const cta=$('#app-cta'),info=state.app.page==='info',guide=state.app.page==='rankGuide';
+  cta.hidden=!info&&!guide;cta.classList.toggle('guide-cta',guide);screen.classList.toggle('has-cta',info||guide);
+  cta.innerHTML=info||guide?`<div class="cta-gradient">${button('call',guide?'아이사랑 문의하기':'어린이집 문의하기','',guide?'data-provider="아이사랑"':'')}${guide?'<p class="cta-note">순번 산정이나 신청 내역에 관한 문의는<br>아이사랑을 이용해 주세요.</p>':''}</div><div class="home-indicator"></div>`:'';
+  $('.os-bar').style.background=state.app.page==='home'?'#f5f6f8':'#fff';
   screen.scrollTop=scroll;
 }
 function navigate(page, changes={}) {
@@ -188,7 +150,7 @@ function showDialog(html) { if(modal.open)modal.close();modal.innerHTML=html;mod
 function welcome() {
   showDialog(`<h2 id="dialog-heading">입소노트를 살펴봐 주세요</h2><p>어린이집 입소를 기다리는 보호자의 입장에서, 상황을 확인하고 다음 행동을 결정하는 테스트입니다.</p><ol class="welcome-steps"><li>상황을 읽고 휴대폰 화면을 탐색해요.</li><li>옆의 질문에 생각을 적어요.</li><li>세 가지 상황을 차례로 살펴봐요.</li></ol><p>${SETTINGS.previewMode?'현재는 시뮬레이션 버전입니다. 작성한 답변과 클릭·이동 기록은 이 기기에만 임시 저장돼요.':'클릭·화면 이동과 작성한 답변이 기록됩니다.'}</p><label class="consent-row"><input id="study-consent" type="checkbox"><span>테스트 참여와 응답·행동 기록에 동의합니다.</span></label>${SETTINGS.clarityProjectId?'<label class="consent-row"><input id="analytics-consent" type="checkbox"><span>Microsoft Clarity를 통한 행동 분석에 동의합니다. (선택)</span></label>':''}<p id="welcome-error" class="dialog-error" role="status"></p><div class="dialog-actions">${button('begin','시작하기','primary-button')}</div>`);
 }
-function enterTask() {closeQuestions();state.app={page:task().startPage,school:task().school,infoTab:'basic',notificationTab:'rank',notificationChild:'all',history:[],scroll:0};errors={};renderScenario();renderQuestions();renderApp();track('task_started');}
+function enterTask() {closeRankSheet();closeQuestions();state.app={page:task().startPage,school:task().school,infoTab:'basic',notificationTab:'rank',notificationChild:'all',history:[],scroll:0};errors={};renderScenario();renderQuestions();renderApp();track('task_started');}
 function inquiry(provider='어린이집') {
   inquiryDraft='';track('call_intent',{provider});const target=provider==='아이사랑'?'아이사랑':school().name;
   showDialog(`<h2 id="dialog-heading">어떤 내용을 문의하고 싶으신가요?</h2><p>실제 서비스에서는 ${e(target)}으로 전화가 연결됩니다. 이번 사용성 테스트에서는 전화 연결 대신, 문의하고 싶은 내용을 적어 주세요.</p><label class="question-help" for="inquiry-text">${e(target)}에 묻고 싶은 내용</label><textarea id="inquiry-text" class="dialog-field" rows="5" maxlength="4000" placeholder="자유롭게 적어 주세요." data-clarity-mask="true"></textarea><p id="inquiry-error" class="dialog-error" role="status"></p><div class="dialog-actions">${button('inquiry-cancel','돌아가기','secondary-button')}${button('inquiry-save','답변 저장하고 돌아가기','primary-button',`data-provider="${e(provider)}"`)}</div>`);
@@ -229,7 +191,7 @@ document.addEventListener('click',event=>{
   if(action==='open-settings'){showSettings();return;}if(action==='close-dialog'){modal.close();return;}
   if(action==='download'){download();return;}if(action==='finish-study'){submitStudy();return;}
   if(action==='restart'){showDialog(`<h2 id="dialog-heading">처음부터 다시 시작할까요?</h2><p>이 기기에 저장한 답변과 탐색 기록이 초기화됩니다. 시뮬레이션 설정은 기본값으로 돌아가요.</p><div class="dialog-actions">${button('close-dialog','취소','secondary-button')}${button('restart-confirm','초기화하고 다시 시작','primary-button')}</div>`);return;}
-  if(action==='restart-confirm'){state=makeState(SETTINGS.revision);data=structuredClone(SCHOOLS);errors={};closeQuestions();save();modal.close();renderScenario();renderQuestions();renderApp();welcome();return;}
+  if(action==='restart-confirm'){closeRankSheet();state=makeState(SETTINGS.revision);data=structuredClone(SCHOOLS);errors={};closeQuestions();save();modal.close();renderScenario();renderQuestions();renderApp();welcome();return;}
   if(action==='inquiry-cancel'){track('call_cancelled');modal.close();return;}
   if(action==='inquiry-save'){const text=$('#inquiry-text').value.trim();if(!text){$('#inquiry-error').textContent='문의하고 싶은 내용을 적어 주세요.';return;}state.inquiries.push({id:crypto.randomUUID(),taskId:task().id,school:state.app.school,provider:t.dataset.provider,page:state.app.page,text,at:new Date().toISOString()});track('inquiry_saved',{provider:t.dataset.provider});modal.close();toast('문의 내용이 저장됐어요.');return;}
   if(!state.started)return;
@@ -240,6 +202,8 @@ document.addEventListener('click',event=>{
   if(action==='notification-open'){if(t.dataset.child!==SETTINGS.childName){track('unavailable_feature',{feature:'other_child_notification'});toast('이 알림의 상세 화면은 준비 중이에요.');return;}navigate('home',{school:t.dataset.school});track('notification_opened');return;}
   if(action==='info-tab'){state.app.infoTab=t.dataset.tab;renderApp();track('school_info_tab_changed');return;}
   if(action==='call'){inquiry(t.dataset.provider);return;}
+  if(action==='ranks'){openRankSheet();return;}
+  if(action==='close-ranks'){closeRankSheet();return;}
   if(action==='back'){goBack();return;}
   if(['home','notifications','history','recruitment','ranks','rankGuide','info'].includes(action)){navigate(action);return;}
 });
@@ -270,6 +234,7 @@ document.addEventListener('submit',event=>{
 modal.addEventListener('input',event=>{if(event.target.id==='inquiry-text')inquiryDraft=event.target.value;if(event.target.id==='final-feedback'){state.finalFeedback=event.target.value;save();}});
 modal.addEventListener('cancel',event=>{if(!state.started){event.preventDefault();return;}if(submitting)event.preventDefault();});
 document.addEventListener('keydown',event=>{
+  if(!$('#phone-rank-sheet').hidden&&!modal.open){if(event.key==='Escape'){event.preventDefault();closeRankSheet();return;}if(event.key==='Tab'){event.preventDefault();$('#phone-rank-sheet button')?.focus();return;}}
   if(!panel.classList.contains('is-open')||modal.open)return;
   if(event.key==='Escape'){event.preventDefault();closeQuestions();return;}
   if(event.key==='Tab'){const nodes=[...panel.querySelectorAll('button,input,textarea,a')].filter(n=>!n.disabled&&n.offsetParent!==null);if(!nodes.length)return;const first=nodes[0],last=nodes.at(-1);if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}}
