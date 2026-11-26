@@ -105,6 +105,7 @@ function openRankSheet() {
   screen.inert=true;$('#app-nav').inert=true;sheet.querySelector('button')?.focus();track('rank_sheet_opened');
 }
 function closeRankSheet() {
+  if($('#phone-rank-sheet').hidden)return;
   $('#phone-rank-sheet').hidden=true;$('#phone-sheet-backdrop').hidden=true;screen.inert=false;$('#app-nav').inert=false;rankFocus?.focus?.();
 }
 function renderApp(scroll = 0) {
@@ -142,7 +143,7 @@ function renderQuestions() {
   panel.classList.toggle('is-open',open); setPanelAccessibility(); save();
 }
 function setPanelAccessibility() { const narrow=matchMedia('(max-width:1024px)').matches; panel.setAttribute('aria-hidden',String(narrow&&!panel.classList.contains('is-open'))); if(narrow&&panel.classList.contains('is-open')){panel.setAttribute('role','dialog');panel.setAttribute('aria-modal','true');}else{panel.removeAttribute('role');panel.removeAttribute('aria-modal');} }
-function openQuestions() { lastFocus=document.activeElement;panel.classList.add('is-open');$('#sheet-backdrop').hidden=false;document.body.classList.add('sheet-open');$('#question-fab').setAttribute('aria-expanded','true');setPanelAccessibility();panel.querySelector('button')?.focus();track('questions_open'); }
+function openQuestions() { closeRankSheet();lastFocus=document.activeElement;panel.classList.add('is-open');$('#sheet-backdrop').hidden=false;document.body.classList.add('sheet-open');$('#question-fab').setAttribute('aria-expanded','true');setPanelAccessibility();panel.querySelector('button')?.focus();track('questions_open'); }
 function closeQuestions() {panel.classList.remove('is-open');$('#sheet-backdrop').hidden=true;document.body.classList.remove('sheet-open');$('#question-fab').setAttribute('aria-expanded','false');setPanelAccessibility();lastFocus?.focus?.();}
 matchMedia('(max-width:1024px)').addEventListener('change',()=>{closeQuestions();setPanelAccessibility();});
 
