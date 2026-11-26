@@ -1,12 +1,12 @@
 // 예시 데이터와 문항은 이 파일에서 수정합니다. 실제 참여자 답변을 넣지 마세요.
 export const SETTINGS = {
-  revision: 'pilot-2026-11-26-v1',
-  previewMode: true,
+  revision: 'ut-2026-11-26-v2',
+  previewMode: false,
   clarityProjectId: '',
   // HTTPS로 JSON을 받아 저장 성공 시 {ok:true, submissionId:"..."}를 반환하는 수집 주소.
-  // Google Sheets 연결 방식은 연구자와 결정 후 추가합니다. 비워두면 전송하지 않습니다.
-  responseEndpoint: '',
-  allowedCollectorOrigins: [],
+  // 비공개 Google Sheets에 쓰는 웹 앱 주소. 응답 조회 API는 제공하지 않습니다.
+  responseEndpoint: 'https://script.google.com/macros/s/AKfycbxxdS2-KqbShTe1CS0fFBbBmc1RkkcEVFg18f8yioX_aUEv27SSGcnlPFmBhMrOyvkd/exec',
+  allowedCollectorOrigins: ['https://script.google.com'],
   childName: '이하임',
   desiredMonth: '2027년 3월',
   age: '0세반',
