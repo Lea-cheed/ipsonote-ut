@@ -57,12 +57,14 @@ function save() {
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); storageAvailable = true; }
   catch { storageAvailable = false; }
   const status = $('#save-status');
+  if(studyLocked()&&status){status.textContent='응답 제출 완료';return;}
   if (status) { status.classList.toggle('failed', !storageAvailable); status.textContent = storageAvailable ? '이 기기에 임시 저장됨' : '임시 저장 불가 · 창을 닫지 마세요'; }
   const count = $('#answer-count');
   if (count) count.textContent = `${questions().filter(q=>!validateQuestions([q],answers())[q.id]).length}/${questions().length}`;
 }
+function studyLocked(){return state.finished||Boolean(state.receipt);}
 function track(name, detail = {}) {
-  if (!state.started) return;
+  if (!state.started || studyLocked()) return;
   state.events.push({name,taskId:task().id,school:state.app.school,page:state.app.page,at:new Date().toISOString(),...detail});
   state.events = state.events.slice(-3000);
   if (state.consent?.analytics && window.clarity) { window.clarity('set','ut_task',task().id); window.clarity('event',name); }
@@ -139,6 +141,12 @@ function fieldHTML(q,index) {
 }
 function renderQuestions() {
   const open=panel.classList.contains('is-open');
+  if(studyLocked()){
+    panel.innerHTML=`<div class="question-header"><h2 id="question-heading">응답 제출 완료</h2>${button('close-questions',icon('close'),'close-sheet','aria-label="질문창 닫기"')}</div><p>답변이 제출됐습니다. 지금은 화면을 다시 살펴보는 중이며, 답변 수정이나 추가 제출은 할 수 없어요.</p>`;
+    $('#question-fab').textContent='제출 완료';
+    document.querySelector('[data-action="restart"]').hidden=true;
+    setPanelAccessibility();return;
+  }
   panel.innerHTML=`<div class="question-header"><div><div class="eyebrow">TASK ${state.taskIndex+1}${state.phase==='probe'?' · 추가 확인':''}</div><h2 id="question-heading">${state.phase==='probe'?'추가로 여쭤볼게요':'질문·응답'}</h2></div>${button('close-questions',icon('close'),'close-sheet','aria-label="질문창 닫기"')}</div>${state.phase==='probe'?'<p class="question-help">앞서 작성한 기본 답변은 저장됐어요.</p>':'<p class="question-help">화면을 살펴보며 답해 주세요. 답변은 자동으로 임시 저장돼요.</p>'}<form id="question-form" novalidate data-clarity-mask="true">${questions().map(fieldHTML).join('')}<div id="form-message" class="form-message" role="status"></div><button class="submit-button" type="submit">${state.phase==='basic'&&task().probes?'기본 답변 저장 · 추가 질문으로':state.taskIndex===TASKS.length-1?'답변 저장 · 마무리':'답변 저장 · 다음 상황으로'}</button></form>`;
   panel.classList.toggle('is-open',open); setPanelAccessibility(); save();
 }
@@ -151,8 +159,9 @@ function showDialog(html) { if(modal.open)modal.close();modal.innerHTML=html;mod
 function welcome() {
   showDialog(`<h2 id="dialog-heading">입소노트를 살펴봐 주세요</h2><p>어린이집 입소를 기다리는 보호자의 입장에서, 상황을 확인하고 다음 행동을 결정하는 테스트입니다.</p><ol class="welcome-steps"><li>상황을 읽고 휴대폰 화면을 탐색해요.</li><li>옆의 질문에 생각을 적어요.</li><li>세 가지 상황을 차례로 살펴봐요.</li></ol><p>작성한 답변과 문의 내용은 연구자에게 전송됩니다. Microsoft Clarity로 화면 탐색·클릭 기록을 수집하며, 입력한 답변 내용은 녹화에서 가려집니다.</p><label class="consent-row"><input id="study-consent" type="checkbox"><span>위 내용을 확인했으며 테스트 참여와 응답·화면 탐색 기록 수집에 동의합니다.</span></label><p id="welcome-error" class="dialog-error" role="status"></p><div class="dialog-actions">${button('begin','시작하기','primary-button')}</div>`);
 }
-function enterTask() {closeRankSheet();closeQuestions();state.app={page:task().startPage,school:task().school,infoTab:'basic',notificationTab:'rank',notificationChild:'all',history:[],scroll:0};errors={};renderScenario();renderQuestions();renderApp();track('task_started');}
+function enterTask() {closeRankSheet();closeQuestions();state.app={page:task().startPage,school:task().school,infoTab:'basic',notificationTab:'rank',notificationChild:'all',history:[],scroll:0};errors={};renderScenario();renderQuestions();renderApp();track('task_started');if(matchMedia('(max-width:1024px)').matches&&!studyLocked())openQuestions();}
 function inquiry(provider='어린이집') {
+  if(studyLocked()){showDialog(`<h2 id="dialog-heading">화면 다시 보기</h2><p>이미 응답을 제출했어요. 다시 보는 중에는 전화가 연결되거나 추가 문의가 저장되지 않습니다.</p><div class="dialog-actions">${button('close-dialog','돌아가기','primary-button')}</div>`);return;}
   inquiryDraft='';track('call_intent',{provider});const target=provider==='아이사랑'?'아이사랑':school().name;
   showDialog(`<h2 id="dialog-heading">어떤 내용을 문의하고 싶으신가요?</h2><p>실제 서비스에서는 ${e(target)}으로 전화가 연결됩니다. 이번 사용성 테스트에서는 전화 연결 대신, 문의하고 싶은 내용을 적어 주세요.</p><label class="question-help" for="inquiry-text">${e(target)}에 묻고 싶은 내용</label><textarea id="inquiry-text" class="dialog-field" rows="5" maxlength="4000" placeholder="자유롭게 적어 주세요." data-clarity-mask="true"></textarea><p id="inquiry-error" class="dialog-error" role="status"></p><div class="dialog-actions">${button('inquiry-cancel','돌아가기','secondary-button')}${button('inquiry-save','답변 저장하고 돌아가기','primary-button',`data-provider="${e(provider)}"`)}</div>`);
 }
@@ -161,9 +170,11 @@ function showSettings() {
   showDialog(`<h2 id="dialog-heading">시뮬레이션 설정</h2><p>숫자를 바꿔 현재 브라우저에서 시뮬레이션할 수 있어요. 다른 참여자의 화면에는 영향을 주지 않습니다.</p><form id="settings-form"><div class="settings-grid">${Object.entries(data).map(([id,s])=>`<div style="grid-column:1/-1;font-weight:700;margin-top:10px">${e(s.name)}</div>${[['rank','대기 순번'],['recruitment','모집 인원'],['responses','입소 의사 확인']].map(([k,t])=>`<label>${t}<input type="number" min="0" max="9999" name="${id}.${k}" value="${s[k]}" required></label>`).join('')}`).join('')}</div><p class="question-help">설정 변경은 미리보기 기록에 포함됩니다. 실제 참여자에게 배포할 값은 config.js에서 수정합니다.</p><div class="dialog-actions">${button('close-dialog','닫기','secondary-button')}<button class="primary-button" type="submit">이 기기에 적용</button></div></form>`);
 }
 function finishDialog() {
+  if(studyLocked()){showCompletion(Boolean(state.receipt));return;}
   showDialog(`<h2 id="dialog-heading">마지막으로 여쭤볼게요</h2><p>입소노트를 사용하며 가장 편리했던 점이나 불편했던 점을 자유롭게 적어 주세요.</p><textarea id="final-feedback" rows="5" class="dialog-field" maxlength="4000" data-clarity-mask="true">${e(state.finalFeedback||'')}</textarea><div class="dialog-actions">${button('finish-study',SETTINGS.previewMode?'답변 저장 · 시뮬레이션 마치기':'응답 제출하기','primary-button')}</div><p class="dialog-error" id="finish-error" role="status"></p>`);
 }
 async function submitStudy() {
+  if(studyLocked()){showCompletion(Boolean(state.receipt));return;}
   if(submitting)return;state.finalFeedback=$('#final-feedback')?.value||state.finalFeedback||'';
   track('study_finish_requested');save();
   if(SETTINGS.previewMode){state.finished=true;save();showCompletion(false);return;}
@@ -183,12 +194,14 @@ async function submitStudy() {
   finally {submitting=false;}
 }
 function showCompletion(sent) {
+  renderQuestions();
   showDialog(`<div class="success-icon" aria-hidden="true">✓</div><h2 id="dialog-heading">${sent?'응답이 제출됐어요':'시뮬레이션을 마쳤어요'}</h2><p>${sent?'참여해 주셔서 감사합니다. 답변이 정상적으로 저장됐습니다.':'답변은 이 기기에 임시 저장됐으며 연구자에게 전송되지 않았어요. 검토용 파일로 내려받을 수 있습니다.'}</p><div class="dialog-actions">${sent?'':button('download','응답 파일 내려받기','secondary-button')}${button('close-dialog','화면 다시 보기','primary-button')}</div>`);
 }
 function download() {const payload={...exportPayload(state,SETTINGS,TASKS,data),finalFeedback:state.finalFeedback||'',receipt:state.receipt||null};const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}),u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=`responses-${state.participantId}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000);}
 
 document.addEventListener('click',event=>{
   const t=event.target.closest('[data-action]');if(!t)return;const action=t.dataset.action;
+  if(studyLocked()&&['begin','restart','restart-confirm','finish-study','inquiry-save','open-settings'].includes(action)){toast('이미 제출한 응답은 수정하거나 다시 제출할 수 없어요.');return;}
   if(action==='toggle-scenario'){const open=t.getAttribute('aria-expanded')!=='true';t.setAttribute('aria-expanded',String(open));t.closest('.scenario-card').classList.toggle('is-expanded',open);t.querySelector('.scenario-toggle-label').textContent=open?'접기':'펼치기';return;}
   if(action==='begin'){if(!$('#study-consent').checked){$('#welcome-error').textContent='동의 항목을 확인해 주세요.';return;}state.consent={study:true,analytics:Boolean(SETTINGS.clarityProjectId),noticeVersion:'combined-20261126',at:new Date().toISOString()};state.started=true;modal.close();startAnalytics();enterTask();return;}
   if(action==='open-questions'){openQuestions();return;}if(action==='close-questions'){closeQuestions();return;}
@@ -212,6 +225,7 @@ document.addEventListener('click',event=>{
   if(['home','notifications','history','recruitment','ranks','rankGuide','info'].includes(action)){navigate(action);return;}
 });
 panel.addEventListener('input',event=>{
+  if(studyLocked())return;
   const el=event.target,q=el.dataset.q;if(!q)return;const a=answers();
   const descriptor=questions().find(x=>x.id===q);
   if(el.type==='radio'){a[q]=el.value;const wrap=panel.querySelector(`[data-other-wrap="${q}"]`);if(wrap)wrap.hidden=el.value!=='other';}
@@ -223,6 +237,7 @@ panel.addEventListener('input',event=>{
   save();
 });
 document.addEventListener('submit',event=>{
+  if(studyLocked()&&['question-form','settings-form'].includes(event.target.id)){event.preventDefault();return;}
   if(event.target.id==='settings-form'){event.preventDefault();const form=event.target;if(!form.reportValidity())return;const f=new FormData(form);for(const [id,s]of Object.entries(data)){
     for(const k of ['rank','recruitment','responses'])s[k]=Number(f.get(id+'.'+k));
     s.previousRank=Math.max(1,s.rank+SCHOOLS[id].delta);s.delta=s.previousRank-s.rank;
@@ -235,7 +250,7 @@ document.addEventListener('submit',event=>{
   if(state.taskIndex<TASKS.length-1){state.taskIndex++;state.phase='basic';enterTask();showDialog(`<h2 id="dialog-heading">다음 상황을 살펴볼게요</h2><p>${e(task().scenario)}</p><div class="dialog-actions">${button('close-dialog','화면 살펴보기','primary-button')}</div>`);}
   else {save();closeQuestions();finishDialog();}
 });
-modal.addEventListener('input',event=>{if(event.target.id==='inquiry-text')inquiryDraft=event.target.value;if(event.target.id==='final-feedback'){state.finalFeedback=event.target.value;save();}});
+modal.addEventListener('input',event=>{if(studyLocked())return;if(event.target.id==='inquiry-text')inquiryDraft=event.target.value;if(event.target.id==='final-feedback'){state.finalFeedback=event.target.value;save();}});
 modal.addEventListener('cancel',event=>{if(!state.started){event.preventDefault();return;}if(submitting)event.preventDefault();});
 document.addEventListener('keydown',event=>{
   if(!$('#phone-rank-sheet').hidden&&!modal.open){if(event.key==='Escape'){event.preventDefault();closeRankSheet();return;}if(event.key==='Tab'){event.preventDefault();$('#phone-rank-sheet button')?.focus();return;}}
@@ -251,4 +266,4 @@ function fitDesktopMockup(){document.documentElement.style.setProperty('--mockup
 fitDesktopMockup();
 window.addEventListener('resize',fitDesktopMockup,{passive:true});
 renderScenario();renderQuestions();renderApp(state.app.scroll);
-if(!state.started)welcome();else {startAnalytics();if(state.finished)showCompletion(Boolean(state.receipt));}
+if(!state.started)welcome();else {startAnalytics();if(studyLocked())showCompletion(Boolean(state.receipt));else if(matchMedia('(max-width:1024px)').matches)openQuestions();}
