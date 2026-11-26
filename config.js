@@ -2,7 +2,7 @@
 export const SETTINGS = {
   revision: 'ut-2026-11-26-v2',
   previewMode: false,
-  clarityProjectId: '',
+  clarityProjectId: 'zjjach8zsk',
   // HTTPS로 JSON을 받아 저장 성공 시 {ok:true, submissionId:"..."}를 반환하는 수집 주소.
   // 비공개 Google Sheets에 쓰는 웹 앱 주소. 응답 조회 API는 제공하지 않습니다.
   responseEndpoint: 'https://script.google.com/macros/s/AKfycbxxdS2-KqbShTe1CS0fFBbBmc1RkkcEVFg18f8yioX_aUEv27SSGcnlPFmBhMrOyvkd/exec',

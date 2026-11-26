@@ -1,5 +1,5 @@
 import {createMobileScreens} from './mobile-design.js';
-import {SETTINGS, SCHOOLS, TASKS} from './config.js?v=20261126-collection';
+import {SETTINGS, SCHOOLS, TASKS} from './config.js?v=20261126-mobile';
 import {STORAGE_KEY, escapeHTML as e, koreaTime, koreaStamp, makeState, restoreState, toggleExclusive, validateQuestions, validEndpoint, exportPayload} from './core.js';
 
 const $ = s => document.querySelector(s);
@@ -83,7 +83,7 @@ function clock() { $('#korea-clock').textContent=koreaTime(); $('#korea-clock').
 clock(); setInterval(clock,1000);
 
 function renderScenario() {
-  $('#scenario-panel').innerHTML = `<div class="scenario-card"><div class="eyebrow">TASK ${state.taskIndex+1} / ${TASKS.length}</div><h1>${e(task().title)}</h1><h2>지금 이런 상황이에요</h2><div class="scenario-content">${e(task().scenario)}</div><p class="small-note">휴대폰 화면을 자유롭게 살펴보고 옆의 질문에 답해 주세요. 질문을 보면서 다시 탐색해도 괜찮아요.</p><div class="progress-list">${TASKS.map((t,i)=>`<div class="progress-item ${i===state.taskIndex?'current':''} ${state.completed.includes(t.id)?'done':''}"><span class="progress-number">${state.completed.includes(t.id)?'✓':i+1}</span><span>${e(t.title)}</span></div>`).join('')}</div><div class="save-status" id="save-status">이 기기에 임시 저장됨</div></div>`;
+  $('#scenario-panel').innerHTML = `<div class="scenario-card"><button class="scenario-toggle" data-action="toggle-scenario" aria-expanded="false" aria-controls="scenario-description"><span class="eyebrow">${state.taskIndex+1}/${TASKS.length}</span><span>${e(task().title)}</span><span class="scenario-toggle-label">펼치기</span></button><div class="eyebrow">TASK ${state.taskIndex+1} / ${TASKS.length}</div><h1>${e(task().title)}</h1><h2>지금 이런 상황이에요</h2><div class="scenario-content" id="scenario-description">${e(task().scenario)}</div><p class="small-note">휴대폰 화면을 자유롭게 살펴보고 옆의 질문에 답해 주세요. 질문을 보면서 다시 탐색해도 괜찮아요.</p><div class="progress-list">${TASKS.map((t,i)=>`<div class="progress-item ${i===state.taskIndex?'current':''} ${state.completed.includes(t.id)?'done':''}"><span class="progress-number">${state.completed.includes(t.id)?'✓':i+1}</span><span>${e(t.title)}</span></div>`).join('')}</div><div class="save-status" id="save-status">이 기기에 임시 저장됨</div></div>`;
 }
 function subHeader(title) {return `<header class="sub-header">${button('back',icon('back'),'back-button','aria-label="이전 화면"')}<h2>${e(title)}</h2><span></span></header>`;}
 function shortTime() { return koreaTime(new Date(state.startedAt)); }
@@ -189,6 +189,7 @@ function download() {const payload={...exportPayload(state,SETTINGS,TASKS,data),
 
 document.addEventListener('click',event=>{
   const t=event.target.closest('[data-action]');if(!t)return;const action=t.dataset.action;
+  if(action==='toggle-scenario'){const open=t.getAttribute('aria-expanded')!=='true';t.setAttribute('aria-expanded',String(open));t.closest('.scenario-card').classList.toggle('is-expanded',open);t.querySelector('.scenario-toggle-label').textContent=open?'접기':'펼치기';return;}
   if(action==='begin'){if(!$('#study-consent').checked){$('#welcome-error').textContent='동의 항목을 확인해 주세요.';return;}state.consent={study:true,analytics:$('#analytics-consent')?.checked||false,at:new Date().toISOString()};state.started=true;modal.close();startAnalytics();enterTask();return;}
   if(action==='open-questions'){openQuestions();return;}if(action==='close-questions'){closeQuestions();return;}
   if(action==='open-settings'){showSettings();return;}if(action==='close-dialog'){modal.close();return;}
