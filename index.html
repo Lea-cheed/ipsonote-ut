@@ -9,15 +9,14 @@
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link rel="stylesheet" href="./styles.css?v=20261126-layout">
-  <link rel="stylesheet" href="./mobile-design.css?v=20261126-layout">
+  <link rel="stylesheet" href="./mobile-design.css?v=20261126-fixed">
 </head>
 <body>
   <a class="skip-link" href="#phone-screen">앱 화면으로 바로 가기</a>
   <header class="study-header">
     <a class="study-brand" href="./"><span class="brand-symbol" aria-hidden="true"></span>입소노트 <span class="study-label">사용성 테스트</span></a>
-    <div class="header-actions"><span class="preview-badge">시뮬레이션</span><button class="text-button" data-action="open-settings">미리보기 설정</button><button class="text-button" data-action="restart">다시 시작</button></div>
+    <div class="header-actions"><button class="text-button" data-action="open-settings">미리보기 설정</button><button class="text-button" data-action="restart">다시 시작</button></div>
   </header>
-  <div class="preview-notice" id="preview-notice">연습용 화면입니다. 답변은 이 기기에 임시 저장되며 연구자에게 전송되지 않습니다.</div>
   <main class="study-layout" id="study-layout">
     <section class="scenario-panel" id="scenario-panel" aria-label="현재 과제와 상황"></section>
     <section class="device-column" aria-label="입소노트 앱 시뮬레이션">
@@ -38,6 +37,6 @@
   <div class="sheet-backdrop" id="sheet-backdrop" hidden data-action="close-questions"></div>
   <dialog id="main-dialog" aria-labelledby="dialog-heading"></dialog>
   <noscript><p class="noscript">테스트를 진행하려면 브라우저에서 JavaScript를 허용해 주세요.</p></noscript>
-  <script type="module" src="./app.js?v=20261126-layout"></script>
+  <script type="module" src="./app.js?v=20261126-fixed"></script>
 </body>
 </html>

@@ -149,7 +149,7 @@ matchMedia('(max-width:1024px)').addEventListener('change',()=>{closeQuestions()
 
 function showDialog(html) { if(modal.open)modal.close();modal.innerHTML=html;modal.showModal(); }
 function welcome() {
-  showDialog(`<h2 id="dialog-heading">입소노트를 살펴봐 주세요</h2><p>어린이집 입소를 기다리는 보호자의 입장에서, 상황을 확인하고 다음 행동을 결정하는 테스트입니다.</p><ol class="welcome-steps"><li>상황을 읽고 휴대폰 화면을 탐색해요.</li><li>옆의 질문에 생각을 적어요.</li><li>세 가지 상황을 차례로 살펴봐요.</li></ol><p>${SETTINGS.previewMode?'현재는 시뮬레이션 버전입니다. 작성한 답변과 클릭·이동 기록은 이 기기에만 임시 저장돼요.':'클릭·화면 이동과 작성한 답변이 기록됩니다.'}</p><label class="consent-row"><input id="study-consent" type="checkbox"><span>테스트 참여와 응답·행동 기록에 동의합니다.</span></label>${SETTINGS.clarityProjectId?'<label class="consent-row"><input id="analytics-consent" type="checkbox"><span>Microsoft Clarity를 통한 행동 분석에 동의합니다. (선택)</span></label>':''}<p id="welcome-error" class="dialog-error" role="status"></p><div class="dialog-actions">${button('begin','시작하기','primary-button')}</div>`);
+  showDialog(`<h2 id="dialog-heading">입소노트를 살펴봐 주세요</h2><p>어린이집 입소를 기다리는 보호자의 입장에서, 상황을 확인하고 다음 행동을 결정하는 테스트입니다.</p><ol class="welcome-steps"><li>상황을 읽고 휴대폰 화면을 탐색해요.</li><li>옆의 질문에 생각을 적어요.</li><li>세 가지 상황을 차례로 살펴봐요.</li></ol><p>클릭·화면 이동과 작성한 답변이 기록됩니다.</p><label class="consent-row"><input id="study-consent" type="checkbox"><span>테스트 참여와 응답·행동 기록에 동의합니다.</span></label>${SETTINGS.clarityProjectId?'<label class="consent-row"><input id="analytics-consent" type="checkbox"><span>Microsoft Clarity를 통한 행동 분석에 동의합니다. (선택)</span></label>':''}<p id="welcome-error" class="dialog-error" role="status"></p><div class="dialog-actions">${button('begin','시작하기','primary-button')}</div>`);
 }
 function enterTask() {closeRankSheet();closeQuestions();state.app={page:task().startPage,school:task().school,infoTab:'basic',notificationTab:'rank',notificationChild:'all',history:[],scroll:0};errors={};renderScenario();renderQuestions();renderApp();track('task_started');}
 function inquiry(provider='어린이집') {
@@ -171,13 +171,15 @@ async function submitStudy() {
   submitting=true;const submitButton=modal.querySelector('[data-action="finish-study"]');submitButton.disabled=true;
   try {
     const submissionId=state.submissionId ||= crypto.randomUUID();save();
-    const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),15000);
+    const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),30000);
     let response;
-    try {response=await fetch(SETTINGS.responseEndpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...exportPayload(state,SETTINGS,TASKS,data),finalFeedback:state.finalFeedback,submissionId}),signal:controller.signal});} finally {clearTimeout(timer);}
+    submitButton.textContent='제출 중…';
+    const contentType=new URL(SETTINGS.responseEndpoint).hostname==='script.google.com'?'text/plain;charset=utf-8':'application/json';
+    try {response=await fetch(SETTINGS.responseEndpoint,{method:'POST',headers:{'Content-Type':contentType},redirect:'follow',body:JSON.stringify({...exportPayload(state,SETTINGS,TASKS,data),finalFeedback:state.finalFeedback,submissionId}),signal:controller.signal});} finally {clearTimeout(timer);}
     if(!response.ok)throw new Error('HTTP '+response.status);
     const result=await response.json();if(result.ok!==true||result.submissionId!==submissionId)throw new Error('Unconfirmed receipt');
     state.receipt=result.submissionId;state.finished=true;track('study_finished');save();showCompletion(true);
-  } catch {$('#finish-error').textContent='전송 완료를 확인하지 못했어요. 답변은 이 기기에 남아 있습니다. 연결을 확인하고 다시 시도해 주세요.';submitButton.disabled=false;}
+  } catch {$('#finish-error').textContent='전송 완료를 확인하지 못했어요. 답변은 이 기기에 남아 있습니다. 연결을 확인하고 다시 시도해 주세요.';submitButton.disabled=false;submitButton.textContent='다시 제출하기';}
   finally {submitting=false;}
 }
 function showCompletion(sent) {
@@ -242,8 +244,6 @@ document.addEventListener('keydown',event=>{
 });
 screen.addEventListener('scroll',()=>{clearTimeout(saveTimer);saveTimer=setTimeout(()=>{state.app.scroll=screen.scrollTop;save();},200);},{passive:true});
 window.addEventListener('pagehide',()=>{state.app.scroll=screen.scrollTop;save();});
-$('#preview-notice').hidden=!SETTINGS.previewMode;
 document.querySelector('[data-action="open-settings"]').hidden=!SETTINGS.previewMode;
-$('.preview-badge').hidden=!SETTINGS.previewMode;
 renderScenario();renderQuestions();renderApp(state.app.scroll);
 if(!state.started)welcome();else {startAnalytics();if(state.finished)showCompletion(Boolean(state.receipt));}
