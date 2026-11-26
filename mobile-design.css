@@ -1,8 +1,9 @@
 /* 학부모 최종: 375px reference, with fluid widths for real mobile devices. */
 @media(min-width:1025px){
-  .study-layout{margin:20px auto 0;height:calc(100dvh - 94px);align-items:start}
-  .device-column{position:relative;display:block;height:calc(979px * var(--mockup-scale,1))}
-  .device{position:absolute;top:0;left:50%;width:395px;height:979px;min-height:979px;max-height:979px;transform:translateX(-50%) scale(var(--mockup-scale,1));transform-origin:top center}
+  .study-layout{margin:20px auto 0;height:calc(100dvh - 94px);align-items:start;grid-template-columns:minmax(0,1fr) 410px minmax(0,1fr)}
+  .device-column{position:relative;display:block;width:410px;height:calc(864px * var(--mockup-scale,1))}
+  .device{position:absolute;top:0;left:50%;width:410px;height:864px;min-height:864px;max-height:864px;transform:translateX(-50%) scale(var(--mockup-scale,1));transform-origin:top center}
+  .os-bar{height:47px;flex-basis:47px}
   .device-caption{display:none}
   .scenario-panel,.question-panel{max-height:calc(100dvh - 114px);overflow-y:auto}
 }
@@ -111,7 +112,7 @@
 .phone-sheet[hidden],.phone-sheet-backdrop[hidden]{display:none}.sheet-handle{position:absolute;top:9px;left:calc(50% - 40px);width:80px;height:12px;background:transparent;padding:0}.sheet-handle:after{content:"";display:block;margin:auto;width:80px;height:4px;border-radius:99px;background:#d9d9d9}.phone-sheet h2{font-size:18px;line-height:23px;margin:0 0 4px;font-weight:600}.rank-sheet-school{font-size:12px;line-height:15px;color:#838383;margin:0 0 20px}
 .rank-kind{padding:12px 16px 14px;border:0}.rank-kind.current{background:#f0faff}.rank-kind>div{display:flex;align-items:center;justify-content:space-between;gap:8px}.rank-kind h3{font-size:14px;font-weight:600;line-height:18px;margin:0}.rank-kind strong{font-size:14px;line-height:18px;font-weight:500;display:inline-flex;align-items:center;justify-content:center;min-width:55px;height:26px;padding:3px 10px;border-radius:99px;background:#f2f4f6}.rank-kind.current strong{background:#1956a9;color:white}.rank-kind p{font-size:13px;line-height:19.5px;color:#838383;margin:8px 0 0}
 @media(max-width:1024px){.app-top{padding:0 20px 0 18px}.app-nav{flex-basis:90px;padding:15px 32px 32px}.greeting{font-size:18px}.phone-sheet{min-height:min(446px,88%)}}
-@media(min-width:1025px) and (max-width:1200px){.device-column,.device{width:395px}.study-layout{grid-template-columns:minmax(0,1fr) 395px minmax(0,1fr)}}
+@media(min-width:1025px) and (max-width:1200px){.device-column,.device{width:410px}.study-layout{grid-template-columns:minmax(0,1fr) 410px minmax(0,1fr)}}
 
 /* Real mobile viewport: compact study controls, independently scrolling app. */
 .scenario-toggle{display:none}
