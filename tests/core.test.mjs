@@ -43,7 +43,7 @@ test('question validation requires other details and accepts zero or unknown cou
   assert.equal(questionError(keep,['star','forest']),'');
 });
 test('tasks open the agreed screens and task 2 probes are separate',()=>{
-  assert.deepEqual(TASKS.map(t=>[t.school,t.startPage]),[['star','home'],['forest','notifications'],['sunny','home']]);
+  assert.deepEqual(TASKS.map(t=>[t.school,t.startPage]),[['star','home'],['forest','home'],['sunny','home']]);
   assert.equal(TASKS[0].questions[1].options[1].label,'1~3일동안 기다리고, 연락이 없으면 전화한다.');
   assert.equal(TASKS[1].questions.length,4);
   assert.equal(TASKS[1].probes.length,2);

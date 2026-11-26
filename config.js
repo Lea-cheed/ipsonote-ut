@@ -1,6 +1,6 @@
 // 예시 데이터와 문항은 이 파일에서 수정합니다. 실제 참여자 답변을 넣지 마세요.
 export const SETTINGS = {
-  revision: 'ut-2026-11-26-v2',
+  revision: 'ut-2026-11-26-v3',
   previewMode: false,
   clarityProjectId: 'zjjach8zsk',
   // HTTPS로 JSON을 받아 저장 성공 시 {ok:true, submissionId:"..."}를 반환하는 수집 주소.
@@ -17,7 +17,7 @@ export const SCHOOLS = {
     name: '별빛 어린이집', rank: 4, previousRank: 5, delta: 1,
     reason: '앞 순번의 아동 1명이 대기신청을 취소하여 대기 순번이 올라갔어요.',
     status: '신학기 확정 및 증빙', contactPending: true,
-    recruitment: 9, responses: 9, allRank: 52, regularRank: null,
+    recruitment: 9, responses: 2, allRank: 52, regularRank: null,
     type: '국공립', address: '서울 강서구 까치산로22길 10',
     capacity: 20, teachers: 5, enrolled: 18,
   },
@@ -51,9 +51,9 @@ const actions = [
 export const TASKS = [
   {
     id: 'task-1', title: '입소 연락을 기다릴지 판단하기', school: 'star', startPage: 'home',
-    scenario: '신학기 입소를 기다리고 있는데 아직 연락을 받지 못했습니다. 현재 상황을 확인하고 다음 행동을 결정해 주세요.',
+    scenario: '별빛 어린이집의 신학기 입소를 기다리고 있는데 아직 연락을 받지 못했습니다. 별빛 어린이집의 현재 상황을 확인하고 다음 행동을 결정해 주세요.',
     questions: [
-      { id: 'understanding', type: 'text', label: '현재 어떤 상황이라고 이해하셧나요?' },
+      { id: 'understanding', type: 'text', label: '현재 별빛 어린이집의 입소 상황을 어떻게 이해하셨나요?' },
       { id: 'nextAction', type: 'single', label: '실제라면 다음으로 무엇을 하시겠어요?', options: [
         choice('call', '지금어린이집에 전화한다.'),
         choice('wait_then_call', '1~3일동안 기다리고, 연락이 없으면 전화한다.'),
@@ -66,7 +66,7 @@ export const TASKS = [
     ],
   },
   {
-    id: 'task-2', title: '순번 변동 후 입소 가능성 판단하기', school: 'forest', startPage: 'notifications',
+    id: 'task-2', title: '순번 변동 후 입소 가능성 판단하기', school: 'forest', startPage: 'home',
     scenario: '신학기 입소를 기다리던 중, 숲속 어린이집의 대기 순번이 앞당겨졌다는 알림을 받았습니다. 현재 상황을 확인하고 다음 행동을 결정해 주세요.',
     questions: [
       { id: 'understanding', type: 'text', label: '현재 숲속 어린이집의 입소 상황을 어떻게 이해하셨나요?' },

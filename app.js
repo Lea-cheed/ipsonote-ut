@@ -1,5 +1,5 @@
 import {createMobileScreens} from './mobile-design.js';
-import {SETTINGS, SCHOOLS, TASKS} from './config.js?v=20261126-mobile';
+import {SETTINGS, SCHOOLS, TASKS} from './config.js?v=20261126-scenarios';
 import {STORAGE_KEY, escapeHTML as e, koreaTime, koreaStamp, makeState, restoreState, toggleExclusive, validateQuestions, validEndpoint, exportPayload} from './core.js';
 
 const $ = s => document.querySelector(s);
@@ -183,7 +183,7 @@ async function submitStudy() {
   finally {submitting=false;}
 }
 function showCompletion(sent) {
-  showDialog(`<div class="success-icon" aria-hidden="true">✓</div><h2 id="dialog-heading">${sent?'응답이 제출됐어요':'시뮬레이션을 마쳤어요'}</h2><p>${sent?'참여해 주셔서 감사합니다. 답변이 정상적으로 저장됐습니다.':'답변은 이 기기에 임시 저장됐으며 연구자에게 전송되지 않았어요. 검토용 파일로 내려받을 수 있습니다.'}</p><div class="dialog-actions">${button('download','응답 파일 내려받기','secondary-button')}${button('close-dialog','화면 다시 보기','primary-button')}</div>`);
+  showDialog(`<div class="success-icon" aria-hidden="true">✓</div><h2 id="dialog-heading">${sent?'응답이 제출됐어요':'시뮬레이션을 마쳤어요'}</h2><p>${sent?'참여해 주셔서 감사합니다. 답변이 정상적으로 저장됐습니다.':'답변은 이 기기에 임시 저장됐으며 연구자에게 전송되지 않았어요. 검토용 파일로 내려받을 수 있습니다.'}</p><div class="dialog-actions">${sent?'':button('download','응답 파일 내려받기','secondary-button')}${button('close-dialog','화면 다시 보기','primary-button')}</div>`);
 }
 function download() {const payload={...exportPayload(state,SETTINGS,TASKS,data),finalFeedback:state.finalFeedback||'',receipt:state.receipt||null};const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}),u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=`responses-${state.participantId}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000);}
 
