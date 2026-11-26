@@ -27,7 +27,7 @@
 .delta.down{background:#eaf7ff;color:#5d9eff}
 .history-link{height:20px;display:flex;align-items:center;gap:0;margin-left:auto;padding:0;font-size:13px;line-height:17px}
 .history-link svg{width:20px;height:20px;margin-left:-4px}
-.rank-reason{margin:0;min-height:42px;font-size:14px;line-height:21px;font-weight:600;letter-spacing:0}
+.rank-reason{display:block;width:100%;padding:0;border:0;background:none;text-align:left;cursor:pointer;margin:0;min-height:42px;font-size:14px;line-height:21px;font-weight:600;letter-spacing:0}
 .contact-banner{width:calc(100% + 7px);height:68px;flex-shrink:0;padding:16px 12px;margin:0;gap:11px;border-radius:2px;font-size:13px;line-height:17px}
 .contact-banner svg{width:24px;height:24px}.contact-banner>div{min-width:0}.contact-banner strong{font-size:13px;font-weight:700;line-height:17px;display:block}.contact-banner small{font-size:12px;line-height:15px;margin:4px 0 0;white-space:nowrap}
 .notebook .app-divider{height:1px;width:100%;margin:0;flex-shrink:0;background:#f3f3f3}

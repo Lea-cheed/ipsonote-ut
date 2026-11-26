@@ -83,7 +83,7 @@ export const TASKS = [
     id: 'task-3', title: '입소노트 자유롭게 탐색하기', school: 'sunny', startPage: 'home',
     scenario: '입소노트를 자유롭게 둘러봐 주세요. 어린이집 카드를 바꿔 보거나, 궁금한 정보를 찾아보셔도 좋아요. 충분히 살펴본 뒤 질문에 답해 주세요.',
     questions: [
-      { id: 'nextAction', type: 'text', label: '탐색 후 실제라면 무엇을 하시겠어요? 이유도 알려주세요.' },
+      { id: 'nextAction', type: 'text', label: '자유롭게 둘러보면서 어떤 정보를 찾아보셨나요? 그 정보가 궁금했던 이유도 알려주세요.' },
       { id: 'missing', type: 'text', label: '더 궁금하거나 찾기 어려웠던 정보가 있었나요?', help: '없다면 ‘없음’이라고 적어 주세요.' },
     ],
   },
