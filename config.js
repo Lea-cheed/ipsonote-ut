@@ -1,6 +1,6 @@
 // 예시 데이터와 문항은 이 파일에서 수정합니다. 실제 참여자 답변을 넣지 마세요.
 export const SETTINGS = {
-  revision: 'ut-2026-11-26-v4',
+  revision: 'ut-2026-11-26-v5',
   previewMode: false,
   clarityProjectId: 'zjjach8zsk',
   // HTTPS로 JSON을 받아 저장 성공 시 {ok:true, submissionId:"..."}를 반환하는 수집 주소.

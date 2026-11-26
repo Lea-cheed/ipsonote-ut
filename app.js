@@ -1,5 +1,5 @@
 import {createMobileScreens} from './mobile-design.js';
-import {SETTINGS, SCHOOLS, TASKS} from './config.js?v=20261126-explore';
+import {SETTINGS, SCHOOLS, TASKS} from './config.js?v=20261126-desktop';
 import {STORAGE_KEY, escapeHTML as e, koreaTime, koreaStamp, makeState, restoreState, toggleExclusive, validateQuestions, validEndpoint, exportPayload} from './core.js';
 
 const $ = s => document.querySelector(s);
@@ -149,7 +149,7 @@ matchMedia('(max-width:1024px)').addEventListener('change',()=>{closeQuestions()
 
 function showDialog(html) { if(modal.open)modal.close();modal.innerHTML=html;modal.showModal(); }
 function welcome() {
-  showDialog(`<h2 id="dialog-heading">입소노트를 살펴봐 주세요</h2><p>어린이집 입소를 기다리는 보호자의 입장에서, 상황을 확인하고 다음 행동을 결정하는 테스트입니다.</p><ol class="welcome-steps"><li>상황을 읽고 휴대폰 화면을 탐색해요.</li><li>옆의 질문에 생각을 적어요.</li><li>세 가지 상황을 차례로 살펴봐요.</li></ol><p>클릭·화면 이동과 작성한 답변이 기록됩니다.</p><label class="consent-row"><input id="study-consent" type="checkbox"><span>테스트 참여와 응답·행동 기록에 동의합니다.</span></label>${SETTINGS.clarityProjectId?'<label class="consent-row"><input id="analytics-consent" type="checkbox"><span>Microsoft Clarity를 통한 행동 분석에 동의합니다. (선택)</span></label>':''}<p id="welcome-error" class="dialog-error" role="status"></p><div class="dialog-actions">${button('begin','시작하기','primary-button')}</div>`);
+  showDialog(`<h2 id="dialog-heading">입소노트를 살펴봐 주세요</h2><p>어린이집 입소를 기다리는 보호자의 입장에서, 상황을 확인하고 다음 행동을 결정하는 테스트입니다.</p><ol class="welcome-steps"><li>상황을 읽고 휴대폰 화면을 탐색해요.</li><li>옆의 질문에 생각을 적어요.</li><li>세 가지 상황을 차례로 살펴봐요.</li></ol><p>작성한 답변과 문의 내용은 연구자에게 전송됩니다. Microsoft Clarity로 화면 탐색·클릭 기록을 수집하며, 입력한 답변 내용은 녹화에서 가려집니다.</p><label class="consent-row"><input id="study-consent" type="checkbox"><span>위 내용을 확인했으며 테스트 참여와 응답·화면 탐색 기록 수집에 동의합니다.</span></label><p id="welcome-error" class="dialog-error" role="status"></p><div class="dialog-actions">${button('begin','시작하기','primary-button')}</div>`);
 }
 function enterTask() {closeRankSheet();closeQuestions();state.app={page:task().startPage,school:task().school,infoTab:'basic',notificationTab:'rank',notificationChild:'all',history:[],scroll:0};errors={};renderScenario();renderQuestions();renderApp();track('task_started');}
 function inquiry(provider='어린이집') {
@@ -190,7 +190,7 @@ function download() {const payload={...exportPayload(state,SETTINGS,TASKS,data),
 document.addEventListener('click',event=>{
   const t=event.target.closest('[data-action]');if(!t)return;const action=t.dataset.action;
   if(action==='toggle-scenario'){const open=t.getAttribute('aria-expanded')!=='true';t.setAttribute('aria-expanded',String(open));t.closest('.scenario-card').classList.toggle('is-expanded',open);t.querySelector('.scenario-toggle-label').textContent=open?'접기':'펼치기';return;}
-  if(action==='begin'){if(!$('#study-consent').checked){$('#welcome-error').textContent='동의 항목을 확인해 주세요.';return;}state.consent={study:true,analytics:$('#analytics-consent')?.checked||false,at:new Date().toISOString()};state.started=true;modal.close();startAnalytics();enterTask();return;}
+  if(action==='begin'){if(!$('#study-consent').checked){$('#welcome-error').textContent='동의 항목을 확인해 주세요.';return;}state.consent={study:true,analytics:Boolean(SETTINGS.clarityProjectId),noticeVersion:'combined-20261126',at:new Date().toISOString()};state.started=true;modal.close();startAnalytics();enterTask();return;}
   if(action==='open-questions'){openQuestions();return;}if(action==='close-questions'){closeQuestions();return;}
   if(action==='open-settings'){showSettings();return;}if(action==='close-dialog'){modal.close();return;}
   if(action==='download'){download();return;}if(action==='finish-study'){submitStudy();return;}
