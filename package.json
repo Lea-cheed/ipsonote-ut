@@ -1,0 +1,7 @@
+{
+  "name": "ipsonote-ut",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": { "build": "node build.mjs", "test": "node --test tests/*.test.mjs", "check": "node --check app.js && node --check config.js && node --check core.js" }
+}
