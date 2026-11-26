@@ -148,9 +148,9 @@ function fieldHTML(q,index) {
 function renderQuestions() {
   const open=panel.classList.contains('is-open');
   if(studyLocked()){
-    panel.innerHTML=`<div class="question-header"><h2 id="question-heading">응답 제출 완료</h2>${button('close-questions',icon('close'),'close-sheet','aria-label="질문창 닫기"')}</div><p>답변이 제출됐습니다. 지금은 화면을 다시 살펴보는 중이며, 답변 수정이나 추가 제출은 할 수 없어요.</p>`;
+    panel.innerHTML=`<div class="question-header"><h2 id="question-heading">응답 제출 완료</h2>${button('close-questions',icon('close'),'close-sheet','aria-label="질문창 닫기"')}</div><p>답변이 제출됐습니다. 지금은 화면을 다시 살펴보는 중이며, 답변은 수정되지 않으며, 처음부터 다시 참여해 새 응답을 제출할 수 있어요.</p><div class="dialog-actions">${button('restart','처음부터 다시 참여하기','primary-button')}</div>`;
     $('#question-fab').textContent='제출 완료';
-    document.querySelector('[data-action="restart"]').hidden=true;
+    document.querySelector('[data-action="restart"]').hidden=false;
     setPanelAccessibility();return;
   }
   panel.innerHTML=`<div class="question-header"><div><div class="eyebrow">TASK ${state.taskIndex+1}${state.phase==='probe'?' · 추가 확인':''}</div><h2 id="question-heading">${state.phase==='probe'?'추가로 여쭤볼게요':'질문·응답'}</h2></div>${button('close-questions',icon('close'),'close-sheet','aria-label="질문창 닫기"')}</div>${state.phase==='probe'?'<p class="question-help">앞서 작성한 기본 답변은 저장됐어요.</p>':'<p class="question-help">화면을 살펴보며 답해 주세요. 답변은 자동으로 임시 저장돼요.</p>'}<form id="question-form" novalidate data-clarity-mask="true">${questions().map(fieldHTML).join('')}<div id="form-message" class="form-message" role="status"></div><button class="submit-button" type="submit">${state.phase==='basic'&&task().probes?'기본 답변 저장 · 추가 질문으로':state.taskIndex===TASKS.length-1?'답변 저장 · 마무리':'답변 저장 · 다음 상황으로'}</button></form>`;
@@ -202,20 +202,21 @@ async function submitStudy() {
 function showCompletion(sent) {
   if(studyLocked())stopAnalytics();
   renderQuestions();
-  showDialog(`<div class="success-icon" aria-hidden="true">✓</div><h2 id="dialog-heading">${sent?'응답이 제출됐어요':'시뮬레이션을 마쳤어요'}</h2><p>${sent?'참여해 주셔서 감사합니다. 답변이 정상적으로 저장됐습니다.':'답변은 이 기기에 임시 저장됐으며 연구자에게 전송되지 않았어요. 검토용 파일로 내려받을 수 있습니다.'}</p><div class="dialog-actions">${sent?'':button('download','응답 파일 내려받기','secondary-button')}${button('close-dialog','화면 다시 보기','primary-button')}</div>`);
+  showDialog(`<div class="success-icon" aria-hidden="true">✓</div><h2 id="dialog-heading">${sent?'응답이 제출됐어요':'시뮬레이션을 마쳤어요'}</h2><p>${sent?'참여해 주셔서 감사합니다. 답변이 정상적으로 저장됐습니다.':'답변은 이 기기에 임시 저장됐으며 연구자에게 전송되지 않았어요. 검토용 파일로 내려받을 수 있습니다.'}</p><div class="dialog-actions">${sent?'':button('download','응답 파일 내려받기','secondary-button')}${button('close-dialog','화면 다시 보기','secondary-button')}${button('restart','처음부터 다시 참여하기','primary-button')}</div>`);
 }
 function download() {const payload={...exportPayload(state,SETTINGS,TASKS,data),finalFeedback:state.finalFeedback||'',receipt:state.receipt||null};const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}),u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=`responses-${state.participantId}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000);}
 
 document.addEventListener('click',event=>{
   const t=event.target.closest('[data-action]');if(!t)return;const action=t.dataset.action;
-  if(studyLocked()&&['begin','restart','restart-confirm','finish-study','inquiry-save','open-settings'].includes(action)){toast('이미 제출한 응답은 수정하거나 다시 제출할 수 없어요.');return;}
+  if(submitting&&['restart','restart-confirm'].includes(action))return;
+  if(studyLocked()&&['begin','finish-study','inquiry-save','open-settings'].includes(action)){toast('이미 제출한 응답은 수정하거나 다시 제출할 수 없어요.');return;}
   if(action==='toggle-scenario'){const open=t.getAttribute('aria-expanded')!=='true';t.setAttribute('aria-expanded',String(open));t.closest('.scenario-card').classList.toggle('is-expanded',open);t.querySelector('.scenario-toggle-label').textContent=open?'접기':'펼치기';return;}
   if(action==='begin'){if(!$('#study-consent').checked){$('#welcome-error').textContent='동의 항목을 확인해 주세요.';return;}state.consent={study:true,analytics:Boolean(SETTINGS.clarityProjectId),noticeVersion:'combined-20261126',at:new Date().toISOString()};state.started=true;modal.close();startAnalytics();enterTask();return;}
   if(action==='open-questions'){openQuestions();return;}if(action==='close-questions'){closeQuestions();return;}
   if(action==='open-settings'){showSettings();return;}if(action==='close-dialog'){modal.close();return;}
   if(action==='download'){download();return;}if(action==='finish-study'){submitStudy();return;}
-  if(action==='restart'){showDialog(`<h2 id="dialog-heading">처음부터 다시 시작할까요?</h2><p>이 기기에 저장한 답변과 탐색 기록이 초기화됩니다. 시뮬레이션 설정은 기본값으로 돌아가요.</p><div class="dialog-actions">${button('close-dialog','취소','secondary-button')}${button('restart-confirm','초기화하고 다시 시작','primary-button')}</div>`);return;}
-  if(action==='restart-confirm'){closeRankSheet();state=makeState(SETTINGS.revision);data=structuredClone(SCHOOLS);errors={};closeQuestions();save();modal.close();renderScenario();renderQuestions();renderApp();welcome();return;}
+  if(action==='restart'){showDialog(`<h2 id="dialog-heading">처음부터 다시 시작할까요?</h2><p>이 기기에 저장한 답변과 탐색 기록이 초기화됩니다. 시뮬레이션 설정은 기본값으로 돌아가요.${studyLocked()?' 이전에 제출한 응답은 보관되며, 다시 작성하면 새 응답으로 저장됩니다.':''}</p><div class="dialog-actions">${button('close-dialog','취소','secondary-button')}${button('restart-confirm','초기화하고 다시 시작','primary-button')}</div>`);return;}
+  if(action==='restart-confirm'){const participantId=studyLocked()?state.participantId:null;state=makeState(SETTINGS.revision);if(participantId)state.participantId=participantId;save();window.location.reload();return;}
   if(action==='inquiry-cancel'){track('call_cancelled');modal.close();return;}
   if(action==='inquiry-save'){const text=$('#inquiry-text').value.trim();if(!text){$('#inquiry-error').textContent='문의하고 싶은 내용을 적어 주세요.';return;}state.inquiries.push({id:crypto.randomUUID(),taskId:task().id,school:state.app.school,provider:t.dataset.provider,page:state.app.page,text,at:new Date().toISOString()});track('inquiry_saved',{provider:t.dataset.provider});modal.close();toast('문의 내용이 저장됐어요.');return;}
   if(!state.started)return;
