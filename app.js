@@ -26,6 +26,7 @@ let inquiryDraft = '';
 let toastTimer;
 let lastFocus;
 let submitting = false;
+let analyticsStopped = false;
 let saveTimer;
 const paths = {
   arrow:'m9 5 7 7-7 7', back:'m15 5-7 7 7 7', down:'m6 9 6 6 6-6',
@@ -71,6 +72,7 @@ function track(name, detail = {}) {
   save();
 }
 function startAnalytics() {
+  if(studyLocked())return;
   if (!state.consent?.analytics || !/^[a-zA-Z0-9]+$/.test(SETTINGS.clarityProjectId)) return;
   if (!window.clarity) {
     window.clarity = function(...args) {(window.clarity.q ||= []).push(args);};
@@ -79,6 +81,10 @@ function startAnalytics() {
   window.clarity('consentv2',{analytics_Storage:'granted',ad_Storage:'denied'});
   window.clarity('identify',state.participantId);
   window.clarity('set','ut_revision',SETTINGS.revision);
+}
+function stopAnalytics(){
+  if(!window.clarity||analyticsStopped)return;
+  try{window.clarity('event','ut_completed');window.clarity('stop');analyticsStopped=true;}catch{/* Analytics must not change a successful response receipt. */}
 }
 function toast(message) { const t = $('#app-toast'); t.textContent=message; t.classList.add('visible'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('visible'),2800); }
 function clock() { $('#korea-clock').textContent=koreaTime(); $('#korea-clock').dateTime=new Date().toISOString(); }
@@ -194,6 +200,7 @@ async function submitStudy() {
   finally {submitting=false;}
 }
 function showCompletion(sent) {
+  if(studyLocked())stopAnalytics();
   renderQuestions();
   showDialog(`<div class="success-icon" aria-hidden="true">✓</div><h2 id="dialog-heading">${sent?'응답이 제출됐어요':'시뮬레이션을 마쳤어요'}</h2><p>${sent?'참여해 주셔서 감사합니다. 답변이 정상적으로 저장됐습니다.':'답변은 이 기기에 임시 저장됐으며 연구자에게 전송되지 않았어요. 검토용 파일로 내려받을 수 있습니다.'}</p><div class="dialog-actions">${sent?'':button('download','응답 파일 내려받기','secondary-button')}${button('close-dialog','화면 다시 보기','primary-button')}</div>`);
 }
