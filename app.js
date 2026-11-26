@@ -1,5 +1,5 @@
 import {createMobileScreens} from './mobile-design.js';
-import {SETTINGS, SCHOOLS, TASKS} from './config.js?v=20261126-scenarios';
+import {SETTINGS, SCHOOLS, TASKS} from './config.js?v=20261126-explore';
 import {STORAGE_KEY, escapeHTML as e, koreaTime, koreaStamp, makeState, restoreState, toggleExclusive, validateQuestions, validEndpoint, exportPayload} from './core.js';
 
 const $ = s => document.querySelector(s);

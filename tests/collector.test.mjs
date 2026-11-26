@@ -8,7 +8,7 @@ const context=vm.createContext({Date,console});
 vm.runInContext(fs.readFileSync(new URL('../collector/Code.gs',import.meta.url),'utf8'),context);
 function payload(){
  const s=makeState(SETTINGS.revision);s.consent={study:true};s.completed=TASKS.map(t=>t.id);
- s.answers={'task-1':{understanding:'연락 대기',nextAction:'wait_then_call',reason:'안내 참고',missing:'없음'},'task-2':{nextAction:'other',nextActionOther:'추가 모집 확인',counts:{recruitment:{value:'9'},responses:{unknown:true}}},'task-3':{keep:['star','forest']}};
+ s.answers={'task-1':{understanding:'연락 대기',nextAction:'wait_then_call',reason:'안내 참고',missing:'없음'},'task-2':{nextAction:'other',nextActionOther:'추가 모집 확인',counts:{recruitment:{value:'9'},responses:{unknown:true}}},'task-3':{nextAction:'어린이집에 전화해 추가 문의 — 시기를 확인하고 싶어서',missing:'연락 예상 시기'}};
  s.events=[{name:'call_intent',taskId:'task-1',school:'star',page:'info',at:s.startedAt}];
  s.inquiries=[{taskId:'task-1',school:'star',provider:'어린이집',page:'info',text:'언제 연락하나요?',at:s.startedAt}];
  return{...exportPayload(s,SETTINGS,TASKS,SCHOOLS),submissionId:crypto.randomUUID(),finalFeedback:'좋습니다'};
@@ -17,7 +17,7 @@ test('collector preserves selected choice labels, counts and inquiry context',()
  const p=payload();context.validate_(p);const rows=context.makeRows_(p,new Date('2026-11-26T00:00:00Z'));
  assert.equal(rows['참여자'][0][6],1);assert.equal(rows['참여자'][0][7],1);
  const counts=rows['과제응답'].find(r=>r[3]==='counts');assert.match(counts[6],/모집 인원: 9/);assert.match(counts[6],/기억나지 않음/);
- const keep=rows['과제응답'].find(r=>r[3]==='keep');assert.equal(keep[6],'별빛 어린이집\n숲속 어린이집');
+ const exploration=rows['과제응답'].find(r=>r[2]===TASKS[2].title&&r[3]==='nextAction');assert.equal(exploration[6],p.answers['task-3'].nextAction);
  assert.equal(rows['전화문의'][0][3],'별빛 어린이집');assert.equal(rows['전화문의'][0][6],'언제 연락하나요?');
  assert.equal(rows['원본'].map(r=>r[3]).join(''),JSON.stringify(p));
 });

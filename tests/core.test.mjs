@@ -38,7 +38,7 @@ test('question validation requires other details and accepts zero or unknown cou
   assert.ok(questionError(counts,{recruitment:{value:'-1'},responses:{value:'9'}}));
   assert.ok(questionError(counts,{recruitment:{value:'1.2'},responses:{value:'9'}}));
   assert.equal(Object.keys(validateQuestions(TASKS[0].questions,{})).length,4);
-  const keep=TASKS[2].questions.find(q=>q.id==='keep');
+  const keep={id:'keep',type:'multi',options:[{id:'star'},{id:'forest'},{id:'none'}],exclusive:['none']};
   assert.ok(questionError(keep,['star','none']));
   assert.equal(questionError(keep,['star','forest']),'');
 });
