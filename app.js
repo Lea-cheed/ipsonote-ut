@@ -246,5 +246,9 @@ document.addEventListener('keydown',event=>{
 screen.addEventListener('scroll',()=>{clearTimeout(saveTimer);saveTimer=setTimeout(()=>{state.app.scroll=screen.scrollTop;save();},200);},{passive:true});
 window.addEventListener('pagehide',()=>{state.app.scroll=screen.scrollTop;save();});
 document.querySelector('[data-action="open-settings"]').hidden=!SETTINGS.previewMode;
+// Keep the reference frame intact; scale the whole desktop mockup uniformly.
+function fitDesktopMockup(){document.documentElement.style.setProperty('--mockup-scale',String(Math.min(1,Math.max(1,window.innerHeight-114)/979)));}
+fitDesktopMockup();
+window.addEventListener('resize',fitDesktopMockup,{passive:true});
 renderScenario();renderQuestions();renderApp(state.app.scroll);
 if(!state.started)welcome();else {startAnalytics();if(state.finished)showCompletion(Boolean(state.receipt));}

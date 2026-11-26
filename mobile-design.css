@@ -1,8 +1,8 @@
 /* 학부모 최종: 375px reference, with fluid widths for real mobile devices. */
 @media(min-width:1025px){
   .study-layout{margin:20px auto 0;height:calc(100dvh - 94px);align-items:start}
-  .device-column{display:flex;justify-content:center}
-  .device{height:min(979px,calc(100dvh - 114px));min-height:0;max-height:979px}
+  .device-column{position:relative;display:block;height:calc(979px * var(--mockup-scale,1))}
+  .device{position:absolute;top:0;left:50%;width:395px;height:979px;min-height:979px;max-height:979px;transform:translateX(-50%) scale(var(--mockup-scale,1));transform-origin:top center}
   .device-caption{display:none}
   .scenario-panel,.question-panel{max-height:calc(100dvh - 114px);overflow-y:auto}
 }
